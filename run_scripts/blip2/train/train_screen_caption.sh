@@ -1,0 +1,1 @@
+python train.py --cfg-path lavis/projects/blip2/train/caption_screen_ft_flant5.yaml
