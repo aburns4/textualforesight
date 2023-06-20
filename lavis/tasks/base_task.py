@@ -61,8 +61,12 @@ class BaseTask:
         return datasets
 
     def train_step(self, model, samples):
-        loss = model(samples)["loss"]
-        return loss
+        output = model(samples)
+        loss_dict = {}
+        for k,v in output.items():
+            if "loss" in k:
+                loss_dict[k] = v
+        return output["loss"], loss_dict
 
     def valid_step(self, model, samples):
         raise NotImplementedError
@@ -212,7 +216,8 @@ class BaseTask:
             lr_scheduler.step(cur_epoch=inner_epoch, cur_step=i)
 
             with torch.cuda.amp.autocast(enabled=use_amp):
-                loss = self.train_step(model=model, samples=samples)
+                loss, loss_dict = self.train_step(model=model, samples=samples)
+                loss /= accum_grad_iters #TODO: not affect loss_dict values for logging
 
             # after_train_step()
             if use_amp:
@@ -229,7 +234,7 @@ class BaseTask:
                     optimizer.step()
                 optimizer.zero_grad()
 
-            metric_logger.update(loss=loss.item())
+            metric_logger.update(**loss_dict)
             metric_logger.update(lr=optimizer.param_groups[0]["lr"])
 
         # after train_epoch()

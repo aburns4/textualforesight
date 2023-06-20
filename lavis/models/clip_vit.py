@@ -164,7 +164,7 @@ class VisionTransformer(nn.Module):
         self.positional_embedding = nn.Parameter(scale * torch.randn(self.num_patches + 1, width))
         self.ln_pre = LayerNorm(width)
         
-        self.transformer = Transformer(width, layers-1, heads, use_grad_checkpointing=use_grad_checkpointing)
+        self.transformer = Transformer(width, layers, heads, use_grad_checkpointing=use_grad_checkpointing)
            
 #         self.ln_final = LayerNorm(width)
 
@@ -235,7 +235,7 @@ def create_clip_vit_L(img_size=224,use_checkpoint=False,precision="fp16"):
             input_resolution=img_size,
             patch_size=14,
             width=1024,
-            layers=22,
+            layers=23,
             heads=16,
             use_grad_checkpointing=use_checkpoint,
         )         
