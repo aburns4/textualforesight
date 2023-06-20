@@ -7,6 +7,7 @@
 
 import os
 import json
+import glob
 
 from PIL import Image
 from PIL import ImageFile
@@ -17,6 +18,30 @@ from lavis.datasets.datasets.caption_datasets import CaptionDataset, CaptionEval
 
 COCOCapDataset = CaptionDataset
 
+# just needed to reprocess image paths for 2017 images
+# class COCOCapDataset(CaptionDataset):
+#     def __init__(self, vis_processor, text_processor, vis_root, ann_paths):
+#         super().__init__(vis_processor, text_processor, vis_root, ann_paths)
+
+#     def __getitem__(self, index):
+
+#         # TODO this assumes image input, not general enough
+#         ann = self.annotation[index]
+
+
+#         image_path = glob.glob(os.path.join(self.vis_root, '*', ann["image"].split('_')[-1]))
+#         assert len(image_path) == 1
+#         image_path = image_path[0]
+#         image = Image.open(image_path).convert("RGB")
+
+#         image = self.vis_processor(image)
+#         caption = self.text_processor(ann["caption"])
+
+#         return {
+#             "image": image,
+#             "text_input": caption,
+#             "image_id": self.img_ids[ann["image_id"]],
+#         }
 
 class COCOCapEvalDataset(CaptionEvalDataset):
     def __init__(self, vis_processor, text_processor, vis_root, ann_paths):

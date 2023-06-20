@@ -15,7 +15,7 @@ from lavis.tasks.base_task import BaseTask
 
 @registry.register_task("captioning")
 class CaptionTask(BaseTask):
-    def __init__(self, num_beams, max_len, min_len, evaluate, report_metric=True):
+    def __init__(self, num_beams, max_len, min_len, evaluate, report_metric=True, anns_path=None):
         super().__init__()
 
         self.num_beams = num_beams
@@ -24,6 +24,7 @@ class CaptionTask(BaseTask):
         self.evaluate = evaluate
 
         self.report_metric = report_metric
+        self.anns_path = anns_path
 
     @classmethod
     def setup_task(cls, cfg):
@@ -33,6 +34,7 @@ class CaptionTask(BaseTask):
         max_len = run_cfg.max_len
         min_len = run_cfg.min_len
         evaluate = run_cfg.evaluate
+        anns_path = run_cfg.anns_path
 
         report_metric = run_cfg.get("report_metric", True)
 
@@ -42,6 +44,7 @@ class CaptionTask(BaseTask):
             min_len=min_len,
             evaluate=evaluate,
             report_metric=report_metric,
+            anns_path=anns_path
         )
 
     def valid_step(self, model, samples):
@@ -79,12 +82,36 @@ class CaptionTask(BaseTask):
 
         return metrics
 
+    def get_annotations_file(self, split):
+        if 'coco' in self.anns_path:
+            urls = {
+                "val": "https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_val_gt.json",
+                "test": "https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_test_gt.json",
+            }
+            filenames = {
+                "val": "coco_karpathy_val_gt.json",
+                "test": "coco_karpathy_test_gt.json",
+            }
+            # self.anns_path needs to be the same as below for coco
+            # coco_gt_root = os.path.join(registry.get_path("cache_root"), "coco_gt")
+
+            download_url(urls[split], self.anns_path)
+            annotation_file = os.path.join(self.anns_path, filenames[split])
+        else:
+            assert 'screen' in self.anns_path
+            filenames = {
+                "val": "eval_val.json",
+                "test": "eval_test.json",
+            }
+            annotation_file = os.path.join(self.anns_path, filenames[split])
+        return annotation_file
+    
     @main_process
     def _report_metrics(self, eval_result_file, split_name):
 
         # TODO better way to define this
-        coco_gt_root = os.path.join(registry.get_path("cache_root"), "coco_gt")
-        coco_val = coco_caption_eval(coco_gt_root, eval_result_file, split_name)
+        annotation_file = self.get_annotations_file(split_name)
+        coco_val = coco_caption_eval(annotation_file, eval_result_file)
 
         agg_metrics = coco_val.eval["CIDEr"] + coco_val.eval["Bleu_4"]
         log_stats = {split_name: {k: v for k, v in coco_val.eval.items()}}
@@ -106,18 +133,7 @@ from pycocotools.coco import COCO
 from torchvision.datasets.utils import download_url
 
 
-def coco_caption_eval(coco_gt_root, results_file, split):
-    urls = {
-        "val": "https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_val_gt.json",
-        "test": "https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_test_gt.json",
-    }
-    filenames = {
-        "val": "coco_karpathy_val_gt.json",
-        "test": "coco_karpathy_test_gt.json",
-    }
-
-    download_url(urls[split], coco_gt_root)
-    annotation_file = os.path.join(coco_gt_root, filenames[split])
+def coco_caption_eval(annotation_file, results_file):
 
     # create coco object and coco_result object
     coco = COCO(annotation_file)

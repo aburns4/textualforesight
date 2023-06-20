@@ -5,7 +5,7 @@
  For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 """
 import logging
-
+import numpy as np
 import torch
 import torch.nn as nn
 from torch.cuda.amp import autocast as autocast
@@ -243,6 +243,113 @@ class Blip2T5(Blip2Base):
             )
 
         return output_text
+
+    @torch.no_grad()
+    def generate_yes_logits(
+        self,
+        samples,
+        use_nucleus_sampling=False,
+        num_beams=5,
+        max_length=30,
+        min_length=1,
+        top_p=0.9,
+        repetition_penalty=1.0,
+        length_penalty=1.0,
+        num_captions=1,
+        temperature=1,
+        scores=True,
+        return_dict=True
+    ):
+        """
+        Args:
+            samples (dict): A dictionary containing the following keys:
+                - image (torch.Tensor): A tensor of shape (batch_size, 3, H, W)
+            use_nucleus_sampling (bool): Whether to use nucleus sampling. If False, use top-k sampling.
+            num_beams (int): Number of beams for beam search. 1 means no beam search.
+            max_length (int): The maximum length of the sequence to be generated.
+            min_length (int): The minimum length of the sequence to be generated.
+            top_p (float): The cumulative probability for nucleus sampling.
+            repetition_penalty (float): The parameter for repetition penalty. 1.0 means no penalty.
+            num_captions (int): Number of captions to be generated for each image.
+        Returns:
+            captions (list): A list of strings of length batch_size * num_captions.
+        """
+        image = samples["image"]
+
+        with self.maybe_autocast():
+            image_embeds = self.ln_vision(self.visual_encoder(image))
+        image_embeds = image_embeds.float()
+        image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long).to(
+            image.device
+        )
+
+        query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
+        query_output = self.Qformer.bert(
+            query_embeds=query_tokens,
+            encoder_hidden_states=image_embeds,
+            encoder_attention_mask=image_atts,
+            return_dict=True,
+        )
+
+        inputs_t5 = self.t5_proj(query_output.last_hidden_state)
+        atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
+
+        if "prompt" in samples.keys():
+            prompt = samples["prompt"]
+        else:
+            prompt = self.prompt
+
+        if isinstance(prompt, str):
+            prompt = [prompt] * image.size(0)
+        else:
+            assert len(prompt) == image.size(
+                0
+            ), "The number of prompts must be equal to the batch size."
+
+        input_tokens = self.t5_tokenizer(
+            prompt, padding="longest", return_tensors="pt"
+        ).to(image.device)
+
+        encoder_atts = torch.cat([atts_t5, input_tokens.attention_mask], dim=1)
+
+        with self.maybe_autocast(dtype=torch.bfloat16):
+            inputs_embeds = self.t5_model.encoder.embed_tokens(input_tokens.input_ids)
+            inputs_embeds = torch.cat([inputs_t5, inputs_embeds], dim=1)
+
+            outputs = self.t5_model.generate(
+                inputs_embeds=inputs_embeds,
+                attention_mask=encoder_atts,
+                do_sample=use_nucleus_sampling,
+                top_p=top_p,
+                temperature=temperature,
+                num_beams=num_beams,
+                max_new_tokens=max_length,
+                min_length=min_length,
+                repetition_penalty=repetition_penalty,
+                length_penalty=length_penalty,
+                num_return_sequences=num_captions,
+                output_scores=scores,
+                return_dict_in_generate=return_dict,
+                output_attentions=True,
+                output_hidden_states=True,
+            )
+
+            yes_idx = self.t5_tokenizer("yes").input_ids[0]
+            first_beam_idx = outputs.beam_indices[:, 0]
+
+            # transition_scores = self.t5_model.compute_transition_scores(outputs.sequences, outputs.scores, outputs.beam_indices, normalize_logits=True)
+            # input_length = 1
+            # output_length = input_length + np.sum(transition_scores.cpu().numpy() < 0, axis=1)
+            # length_penalty = self.t5_model.generation_config.length_penalty
+            # reconstructed_scores = transition_scores.cpu().sum(axis=1) / (output_length**length_penalty)
+            # generated_tokens = outputs.sequences[:, input_length:]
+            # for tok, score in zip(generated_tokens[0], transition_scores[0]):
+            #     # | token | token string | logits | probability
+            #     print(f"| {tok:5d} | {self.t5_tokenizer.decode(tok):8s} | {score.cpu().numpy():.3f} | {np.exp(score.cpu().numpy()):.2%}")
+            first_decode_step = outputs.scores[0]
+            first_beam_scores = torch.index_select(first_decode_step, 0, first_beam_idx)
+            decoded_yes_scores = first_beam_scores[:, yes_idx]
+        return decoded_yes_scores
 
     def predict_answers(
         self,
