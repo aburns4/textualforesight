@@ -1,0 +1,45 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+model:
+  arch: blip2_opt
+  model_type: vqa_screen_opt2.7b
+  use_grad_checkpoint: False
+  load_finetuned: False
+  text_condition_qformer: False
+
+datasets:
+  widget_vqa: # name of the dataset builder
+    vis_processor:
+        eval:
+          name: "blip_image_eval"
+          image_size: 364
+    text_processor:
+        eval:
+          name: "blip_question"
+
+run:
+  task: rico_vqa
+  # optimizer
+  batch_size_train: 32
+  batch_size_eval: 8
+  num_workers: 4
+
+  max_len: 30
+  min_len: 1
+  num_beams: 5
+  metric_type: "caption"
+  anns_path: "/projectnb2/ivc-ml/aburns4/widget-caption"
+
+  seed: 42
+  output_dir: "output/BLIP2/widget_caption/flant5/20230718072_11"
+
+  evaluate: True
+  test_splits: ["val", "test"]
+
+  device: "cuda"
+  world_size: 1
+  dist_url: "env://"
+  distributed: False
