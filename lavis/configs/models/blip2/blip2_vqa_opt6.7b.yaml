@@ -25,6 +25,7 @@ model:
 
   # generation configs
   prompt: "Question {} Answer: "
+  max_txt_len: 96
 
 
 preprocess:

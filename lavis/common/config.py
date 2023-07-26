@@ -23,12 +23,13 @@ class Config:
         registry.register("configuration", self)
 
         user_config = self._build_opt_list(self.args.options)
-
+        # print('user config:')
+        # print(user_config)
         config = OmegaConf.load(self.args.cfg_path)
 
         runner_config = self.build_runner_config(config)
         model_config = self.build_model_config(config, **user_config)
-        dataset_config = self.build_dataset_config(config)
+        dataset_config = self.build_dataset_config(config, **user_config)
 
         # Validate the user-provided runner configuration
         # model and dataset configuration are supposed to be validated by the respective classes
@@ -85,8 +86,9 @@ class Config:
         return {"run": config.run}
 
     @staticmethod
-    def build_dataset_config(config):
+    def build_dataset_config(config, **kwargs):
         datasets = config.get("datasets", None)
+        # print(datasets)
         if datasets is None:
             raise KeyError(
                 "Expecting 'datasets' as the root key for dataset configuration."
@@ -96,8 +98,12 @@ class Config:
 
         for dataset_name in datasets:
             builder_cls = registry.get_builder_class(dataset_name)
-
-            dataset_config_type = datasets[dataset_name].get("type", "default")
+            if "datasets" in kwargs:
+                dataset_config_type = kwargs["datasets"][dataset_name].get("type", "default")
+            else:
+                dataset_config_type = datasets[dataset_name].get("type", "default")
+            # print(dataset_config)
+            # print(dataset_config_type)
             dataset_config_path = builder_cls.default_config_path(
                 type=dataset_config_type
             )

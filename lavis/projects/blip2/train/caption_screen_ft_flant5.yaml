@@ -9,9 +9,10 @@ model:
   load_finetuned: False
   use_grad_checkpoint: True
   freeze_vit: False
+  text_condition_qformer: False
 
 datasets:
-  screen_caption_flant5: # name of the dataset builder
+  screen_caption: # name of the dataset builder
     vis_processor:
         train:
           name: "blip2_image_train"
@@ -43,8 +44,8 @@ run:
   num_workers: 4
   accum_grad_iters: 1
 
-  max_len: 88
-  min_len: 6
+  max_len: 21
+  min_len: 1
   num_beams: 5
   anns_path: "/projectnb2/ivc-ml/aburns4/screen2words"
 
@@ -52,12 +53,12 @@ run:
   output_dir: "output/BLIP2/caption_screen/flant5"
 
   amp: True
-  resume_ckpt_path: "/projectnb2/ivc-ml/aburns4/LAVIS/lavis/output/BLIP2/caption_screen/flant5/20230616115/checkpoint_best.pth"
+  resume_ckpt_path: null
 
   evaluate: False
   train_splits: ["train"]
   valid_splits: ["val"]
-  test_splits: ["test"]
+  test_splits: ["val", "test"]
 
   device: "cuda"
   world_size: 1

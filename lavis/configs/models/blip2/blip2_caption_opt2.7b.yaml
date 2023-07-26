@@ -24,7 +24,8 @@ model:
   opt_model: "facebook/opt-2.7b"
 
   # generation configs
-  prompt: "a photo of"
+  prompt: "a screenshot of "
+  max_txt_len: 96
 
 
 preprocess:
@@ -38,5 +39,7 @@ preprocess:
     text_processor:
         train:
           name: "blip_caption"
+          prompt: "a screenshot of"
         eval:
           name: "blip_caption"
+          prompt: "a screenshot of"

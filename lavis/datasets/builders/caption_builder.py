@@ -13,10 +13,10 @@ from lavis.datasets.datasets.coco_caption_datasets import (
 )
 
 from lavis.datasets.datasets.rico_datasets import (
-    RicoOPTCapDataset,
-    RicoFlanT5CapDataset,
-    RicoFlanT5VQADataset,
-    RicoFlanT5VQAEvalDataset
+    RicoCapDataset,
+    RicoVQADataset,
+    RicoVQAEvalDataset,
+    RicoGroundVQAEvalDataset,
 )
 
 from lavis.common.registry import registry
@@ -28,34 +28,56 @@ from lavis.datasets.datasets.video_caption_datasets import (
 @registry.register_builder("tap_vqa")
 class RicoVQABuilder(BaseDatasetBuilder):
     train_dataset_cls = RicoVQADataset
-    eval_dataset_cls = RicoVQAEvalDataset
+    eval_dataset_cls = RicoVQADataset
 
     DATASET_CONFIG_DICT = {
         "default": "configs/datasets/rico/tappability_vqa.yaml",
+        "twice": "configs/datasets/rico/tappability_2_vqa.yaml",
+        "flipped": "configs/datasets/rico/tappability_flipped_vqa.yaml",
+        "flipped_twice": "configs/datasets/rico/tappability_flipped_2_vqa.yaml",
     }
 
-@registry.register_builder("screen_caption_opt")
-class COCOCapBuilder(BaseDatasetBuilder):
-    # def __init__(self, cfg=None):
-    #     BaseDatasetBuilder.__init__(self, cfg)
-    # model_type=self.config.build_info.model
-    train_dataset_cls = RicoOPTCapDataset # .__init__()
-    eval_dataset_cls = COCOCapEvalDataset
-        
-    DATASET_CONFIG_DICT = {
-            "default": "configs/datasets/rico/screen_summarization_opt.yaml",
-        }
+@registry.register_builder("language_ground")
+class RicoVQABuilder(BaseDatasetBuilder):
+    train_dataset_cls = RicoVQADataset
+    eval_dataset_cls = RicoVQADataset
 
-@registry.register_builder("screen_caption_flant5")
+    DATASET_CONFIG_DICT = {
+        "default": "configs/datasets/rico/language_grounding_1.yaml",
+        "ratio_4": "configs/datasets/rico/language_grounding_4.yaml",
+        "ratio_10": "configs/datasets/rico/language_grounding_10.yaml",
+        "all": "configs/datasets/rico/language_grounding_all.yaml",
+
+    }
+
+@registry.register_builder("language_ground_eval")
+class RicoVQABuilder(BaseDatasetBuilder):
+    train_dataset_cls = RicoVQADataset
+    eval_dataset_cls = RicoGroundVQAEvalDataset
+
+    DATASET_CONFIG_DICT = {
+        "default": "configs/datasets/rico/language_grounding_eval.yaml",
+    }
+
+@registry.register_builder("widget_vqa")
+class RicoVQABuilder(BaseDatasetBuilder):
+    train_dataset_cls = RicoVQADataset
+    eval_dataset_cls = RicoVQAEvalDataset
+
+    DATASET_CONFIG_DICT = {
+        "default": "configs/datasets/rico/widget_vqa.yaml",
+    }
+
+@registry.register_builder("screen_caption")
 class COCOCapBuilder(BaseDatasetBuilder):
     # def __init__(self, cfg=None):
     #     BaseDatasetBuilder.__init__(self, cfg)
     # model_type=self.config.build_info.model
-    train_dataset_cls = RicoFlanT5CapDataset # .__init__()
+    train_dataset_cls = RicoCapDataset # .__init__()
     eval_dataset_cls = COCOCapEvalDataset
         
     DATASET_CONFIG_DICT = {
-            "default": "configs/datasets/rico/screen_summarization_flant5.yaml",
+            "default": "configs/datasets/rico/screen_summarization.yaml",
         }
 
 @registry.register_builder("coco_caption")

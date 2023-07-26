@@ -42,6 +42,9 @@ class BlipCaptionProcessor(BaseProcessor):
             cfg = OmegaConf.create()
 
         prompt = cfg.get("prompt", "")
+        if not prompt:
+            prompt = ""
+        print('inside processor, prompt = %s' % prompt)
         max_words = cfg.get("max_words", 50)
 
         return cls(prompt=prompt, max_words=max_words)
@@ -73,7 +76,9 @@ class BlipQuestionProcessor(BaseProcessor):
     def __init__(self, max_words=50):
         self.max_words = max_words
 
-    def __call__(self, question):
+    def __call__(self, question, prompt=None):
+        if prompt:
+            question = prompt.format(question)
         return self.pre_question(question)
 
     @classmethod
@@ -86,12 +91,12 @@ class BlipQuestionProcessor(BaseProcessor):
         return cls(max_words=max_words)
 
     def pre_question(self, question):
-        question = re.sub(
-            r"([.!\"()*#:;~])",
-            "",
-            question.lower(),
-        )
-        question = question.rstrip(" ")
+        # question = re.sub(
+        #     r"([.!\"()*#:;~])",
+        #     "",
+        #     question.lower(),
+        # )
+        question = question.lower() #.rstrip(" ")
 
         # truncate question
         question_words = question.split(" ")

@@ -35,6 +35,7 @@ class Blip2T5(Blip2Base):
         "pretrain_flant5xl_vitL": "configs/models/blip2/blip2_pretrain_flant5xl_vitL.yaml",
         "pretrain_flant5xxl": "configs/models/blip2/blip2_pretrain_flant5xxl.yaml",
         "caption_coco_flant5xl": "configs/models/blip2/blip2_caption_flant5xl.yaml",
+        "vqa_screen_flant5xl": "configs/models/blip2/blip2_vqa_flant5xl.yaml",
     }
 
     def __init__(
@@ -45,10 +46,11 @@ class Blip2T5(Blip2Base):
         use_grad_checkpoint=False,
         vit_precision="fp16",
         freeze_vit=True,
+        input_question=False,
         num_query_token=32,
         t5_model="google/flan-t5-xl",
         prompt="",
-        max_txt_len=32,
+        max_txt_len=64,
         apply_lemmatizer=False,
     ):
         """
@@ -71,12 +73,15 @@ class Blip2T5(Blip2Base):
         self.Qformer, self.query_tokens = self.init_Qformer(
             num_query_token, self.visual_encoder.num_features
         )
+
         self.Qformer.cls = None
-        self.Qformer.bert.embeddings.word_embeddings = None
-        self.Qformer.bert.embeddings.position_embeddings = None
-        for layer in self.Qformer.bert.encoder.layer:
-            layer.output = None
-            layer.intermediate = None
+        self.input_question = input_question
+        if not self.input_question:
+            self.Qformer.bert.embeddings.word_embeddings = None
+            self.Qformer.bert.embeddings.position_embeddings = None
+            for layer in self.Qformer.bert.encoder.layer:
+                layer.output = None
+                layer.intermediate = None
 
         self.t5_tokenizer = T5TokenizerFast.from_pretrained(t5_model)
         t5_config = T5Config.from_pretrained(t5_model)
@@ -109,12 +114,34 @@ class Blip2T5(Blip2Base):
         )
 
         query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
-        query_output = self.Qformer.bert(
-            query_embeds=query_tokens,
-            encoder_hidden_states=image_embeds,
-            encoder_attention_mask=image_atts,
-            return_dict=True,
-        )
+        if not self.input_question:
+            query_output = self.Qformer.bert(
+                query_embeds=query_tokens,
+                encoder_hidden_states=image_embeds,
+                encoder_attention_mask=image_atts,
+                return_dict=True,
+            )
+        else:    
+            text_tokens = self.tokenizer(
+                samples["text_input"],
+                padding="max_length",
+                truncation=True,
+                max_length=self.max_txt_len,
+                return_tensors="pt",
+            ).to(image.device)
+
+            query_atts_itm = torch.ones(query_tokens.size()[:-1], dtype=torch.long).to(
+                image.device
+            )
+            attention_mask_all = torch.cat([query_atts_itm, text_tokens.attention_mask], dim=1)
+            query_output = self.Qformer.bert(
+                input_ids=text_tokens.input_ids,
+                attention_mask=attention_mask_all,
+                query_embeds=query_tokens,
+                encoder_hidden_states=image_embeds,
+                encoder_attention_mask=image_atts,
+                return_dict=True,
+            )
 
         inputs_t5 = self.t5_proj(query_output.last_hidden_state)
         atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
@@ -140,6 +167,9 @@ class Blip2T5(Blip2Base):
             targets = output_tokens.input_ids.masked_fill(
                 output_tokens.input_ids == self.t5_tokenizer.pad_token_id, -100
             )
+
+            # print(samples["text_input"][0])
+            # print(samples["text_output"][0])
 
             inputs_embeds = self.t5_model.encoder.embed_tokens(input_tokens.input_ids)
             inputs_embeds = torch.cat([inputs_t5, inputs_embeds], dim=1)
@@ -193,12 +223,35 @@ class Blip2T5(Blip2Base):
         )
 
         query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
-        query_output = self.Qformer.bert(
-            query_embeds=query_tokens,
-            encoder_hidden_states=image_embeds,
-            encoder_attention_mask=image_atts,
-            return_dict=True,
-        )
+        if not self.input_question:
+            query_output = self.Qformer.bert(
+                query_embeds=query_tokens,
+                encoder_hidden_states=image_embeds,
+                encoder_attention_mask=image_atts,
+                return_dict=True,
+            )
+        else:
+            text_tokens = self.tokenizer(
+                samples["text_input"],
+                padding="max_length",
+                truncation=True,
+                max_length=self.max_txt_len,
+                return_tensors="pt",
+            ).to(image.device)
+            # print('generate condition text tokens %s' % samples["text_input"][0])
+
+            query_atts_itm = torch.ones(query_tokens.size()[:-1], dtype=torch.long).to(
+                image.device
+            )
+            attention_mask_all = torch.cat([query_atts_itm, text_tokens.attention_mask], dim=1)
+            query_output = self.Qformer.bert(
+                input_ids=text_tokens.input_ids,
+                attention_mask=attention_mask_all,
+                query_embeds=query_tokens,
+                encoder_hidden_states=image_embeds,
+                encoder_attention_mask=image_atts,
+                return_dict=True,
+            )
 
         inputs_t5 = self.t5_proj(query_output.last_hidden_state)
         atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
@@ -207,6 +260,7 @@ class Blip2T5(Blip2Base):
             prompt = samples["prompt"]
         else:
             prompt = self.prompt
+        # print('prompt inside generate %s' % prompt)
 
         if isinstance(prompt, str):
             prompt = [prompt] * image.size(0)
@@ -284,12 +338,34 @@ class Blip2T5(Blip2Base):
         )
 
         query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
-        query_output = self.Qformer.bert(
-            query_embeds=query_tokens,
-            encoder_hidden_states=image_embeds,
-            encoder_attention_mask=image_atts,
-            return_dict=True,
-        )
+        if not self.input_question:
+            query_output = self.Qformer.bert(
+                query_embeds=query_tokens,
+                encoder_hidden_states=image_embeds,
+                encoder_attention_mask=image_atts,
+                return_dict=True,
+            )
+        else:
+            text_tokens = self.tokenizer(
+                samples["text_input"],
+                padding="max_length",
+                truncation=True,
+                max_length=self.max_txt_len,
+                return_tensors="pt",
+            ).to(image.device)
+
+            query_atts_itm = torch.ones(query_tokens.size()[:-1], dtype=torch.long).to(
+                image.device
+            )
+            attention_mask_all = torch.cat([query_atts_itm, text_tokens.attention_mask], dim=1)
+            query_output = self.Qformer.bert(
+                input_ids=text_tokens.input_ids,
+                attention_mask=attention_mask_all,
+                query_embeds=query_tokens,
+                encoder_hidden_states=image_embeds,
+                encoder_attention_mask=image_atts,
+                return_dict=True,
+            )
 
         inputs_t5 = self.t5_proj(query_output.last_hidden_state)
         atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
@@ -337,18 +413,102 @@ class Blip2T5(Blip2Base):
             yes_idx = self.t5_tokenizer("yes").input_ids[0]
             first_beam_idx = outputs.beam_indices[:, 0]
 
-            # transition_scores = self.t5_model.compute_transition_scores(outputs.sequences, outputs.scores, outputs.beam_indices, normalize_logits=True)
-            # input_length = 1
-            # output_length = input_length + np.sum(transition_scores.cpu().numpy() < 0, axis=1)
-            # length_penalty = self.t5_model.generation_config.length_penalty
-            # reconstructed_scores = transition_scores.cpu().sum(axis=1) / (output_length**length_penalty)
-            # generated_tokens = outputs.sequences[:, input_length:]
-            # for tok, score in zip(generated_tokens[0], transition_scores[0]):
-            #     # | token | token string | logits | probability
-            #     print(f"| {tok:5d} | {self.t5_tokenizer.decode(tok):8s} | {score.cpu().numpy():.3f} | {np.exp(score.cpu().numpy()):.2%}")
             first_decode_step = outputs.scores[0]
             first_beam_scores = torch.index_select(first_decode_step, 0, first_beam_idx)
             decoded_yes_scores = first_beam_scores[:, yes_idx]
+        return decoded_yes_scores
+
+    def predict_grounding_answers(
+        self,
+        samples,
+        num_beams=5,
+        inference_method="generate",
+        max_len=10,
+        min_len=1,
+        num_ans_candidates=128,
+        answer_list=None,
+        prompt="",
+        length_penalty=-1,
+        **kwargs
+    ):
+        image = samples["image"]
+        with self.maybe_autocast():
+            image_embeds = self.ln_vision(self.visual_encoder(image))
+        image_embeds = image_embeds.float()
+        image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long).to(
+            image.device
+        )
+
+        query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
+        if not self.input_question:
+            query_output = self.Qformer.bert(
+                query_embeds=query_tokens,
+                encoder_hidden_states=image_embeds,
+                encoder_attention_mask=image_atts,
+                return_dict=True,
+            )
+        else:
+            text_input = samples["text_input"]
+            text_tokens = self.tokenizer(
+                text_input,
+                padding="max_length",
+                truncation=True,
+                max_length=self.max_txt_len,
+                return_tensors="pt",
+            ).to(image.device)
+
+            query_atts_itm = torch.ones(query_tokens.size()[:-1], dtype=torch.long).to(
+                image.device
+            )
+            attention_mask_all = torch.cat([query_atts_itm, text_tokens.attention_mask], dim=1)
+            query_output = self.Qformer.bert(
+                input_ids=text_tokens.input_ids,
+                attention_mask=attention_mask_all,
+                query_embeds=query_tokens,
+                encoder_hidden_states=image_embeds,
+                encoder_attention_mask=image_atts,
+                return_dict=True,
+            )
+
+        inputs_t5 = self.t5_proj(query_output.last_hidden_state)
+        atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
+
+        if isinstance(samples["text_input"], str):
+            samples["text_input"] = [samples["text_input"]]
+            
+        text_input = samples["text_input"]
+
+        input_tokens = self.t5_tokenizer(
+            text_input, padding="longest", return_tensors="pt"
+        ).to(image.device)
+
+        encoder_atts = torch.cat([atts_t5, input_tokens.attention_mask], dim=1)
+
+        with self.maybe_autocast(dtype=torch.bfloat16):
+            inputs_embeds = self.t5_model.encoder.embed_tokens(input_tokens.input_ids)
+            inputs_embeds = torch.cat([inputs_t5, inputs_embeds], dim=1)
+
+            outputs = self.t5_model.generate(
+                inputs_embeds=inputs_embeds,
+                attention_mask=encoder_atts,
+                do_sample=False,
+                num_beams=num_beams,
+                max_new_tokens=max_len,
+                min_length=min_len,
+                length_penalty=length_penalty,
+                output_scores=True,
+                return_dict_in_generate=True,
+                output_attentions=True,
+                output_hidden_states=True,
+            )
+
+            yes_idx = self.t5_tokenizer("yes").input_ids[0]
+            first_beam_idx = outputs.beam_indices[:, 0]
+
+            first_decode_step = outputs.scores[0]
+            first_beam_scores = torch.index_select(first_decode_step, 0, first_beam_idx)
+            decoded_yes_scores = first_beam_scores[:, yes_idx]
+
         return decoded_yes_scores
 
     def predict_answers(
@@ -373,22 +533,52 @@ class Blip2T5(Blip2Base):
         )
 
         query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
-        query_output = self.Qformer.bert(
-            query_embeds=query_tokens,
-            encoder_hidden_states=image_embeds,
-            encoder_attention_mask=image_atts,
-            return_dict=True,
-        )
+        if not self.input_question:
+            query_output = self.Qformer.bert(
+                query_embeds=query_tokens,
+                encoder_hidden_states=image_embeds,
+                encoder_attention_mask=image_atts,
+                return_dict=True,
+            )
+        else:
+            # if prompt:
+            #     text_input = [prompt.format(question) for question in samples["text_input"]]
+            # else:
+                
+            text_input = samples["text_input"]
+            text_tokens = self.tokenizer(
+                text_input, # samples["text_input"],
+                padding="max_length",
+                truncation=True,
+                max_length=self.max_txt_len,
+                return_tensors="pt",
+            ).to(image.device)
+            # print('predict answers condition text tokens %s' % samples["text_input"][0])
+
+            query_atts_itm = torch.ones(query_tokens.size()[:-1], dtype=torch.long).to(
+                image.device
+            )
+            attention_mask_all = torch.cat([query_atts_itm, text_tokens.attention_mask], dim=1)
+            query_output = self.Qformer.bert(
+                input_ids=text_tokens.input_ids,
+                attention_mask=attention_mask_all,
+                query_embeds=query_tokens,
+                encoder_hidden_states=image_embeds,
+                encoder_attention_mask=image_atts,
+                return_dict=True,
+            )
 
         inputs_t5 = self.t5_proj(query_output.last_hidden_state)
         atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
 
         if isinstance(samples["text_input"], str):
             samples["text_input"] = [samples["text_input"]]
-        if prompt:
-            text_input = [prompt.format(question) for question in samples["text_input"]]
-        else:
-            text_input = samples["text_input"]
+        # if prompt:
+        #     text_input = [prompt.format(question) for question in samples["text_input"]]
+        # else:
+            
+        text_input = samples["text_input"]
+        # print('predict answers text input %s' % text_input[0])
 
         input_tokens = self.t5_tokenizer(
             text_input, padding="longest", return_tensors="pt"
@@ -466,7 +656,8 @@ class Blip2T5(Blip2Base):
         use_grad_checkpoint = cfg.get("use_grad_checkpoint", False)
         vit_precision = cfg.get("vit_precision", "fp16")
         freeze_vit = cfg.get("freeze_vit", True)
-
+        input_question = cfg.get("text_condition_qformer", False)
+        
         prompt = cfg.get("prompt", "")
         max_txt_len = cfg.get("max_txt_len", 32)
 
@@ -479,6 +670,7 @@ class Blip2T5(Blip2Base):
             use_grad_checkpoint=use_grad_checkpoint,
             vit_precision=vit_precision,
             freeze_vit=freeze_vit,
+            input_question=input_question,
             num_query_token=num_query_token,
             t5_model=t5_model,
             prompt=prompt,

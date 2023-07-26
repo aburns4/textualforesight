@@ -48,6 +48,7 @@ class RunnerBase:
     def __init__(self, cfg, task, model, datasets, job_id):
         self.config = cfg
         self.job_id = job_id
+        logging.info("job id of current experiment: %s" % job_id)
 
         self.task = task
         self.datasets = datasets
@@ -343,6 +344,10 @@ class RunnerBase:
     def setup_output_dir(self):
         lib_root = Path(registry.get_path("library_root"))
 
+        # if self.evaluate_only:
+        #     # don't create new job id folder?
+        #     output_dir = lib_root / self.config.run_cfg.output_dir
+        # else:
         output_dir = lib_root / self.config.run_cfg.output_dir / self.job_id
         result_dir = output_dir / "result"
 
@@ -461,6 +466,7 @@ class RunnerBase:
         # TODO consider moving to model.before_evaluation()
         model = self.unwrap_dist_model(self.model)
         if not skip_reload and cur_epoch == "best":
+            print('Within eval epoch, going to load finetuned ckpt now')
             model = self._reload_best_model(model)
         model.eval()
 
@@ -596,8 +602,11 @@ class RunnerBase:
         """
         Load the best checkpoint for evaluation.
         """
-        checkpoint_path = os.path.join(self.output_dir, "checkpoint_best.pth")
-
+        if self.evaluate_only:
+            checkpoint_path = os.path.join('/'.join(str(self.output_dir).split('/')[:-1]), "checkpoint_best.pth")
+        else:
+            checkpoint_path = os.path.join(self.output_dir, "checkpoint_best.pth")
+        print('Within reload best model')
         logging.info("Loading checkpoint from {}.".format(checkpoint_path))
         checkpoint = torch.load(checkpoint_path, map_location="cpu")
         try:
@@ -634,6 +643,8 @@ class RunnerBase:
             self.scaler.load_state_dict(checkpoint["scaler"])
 
         self.start_epoch = checkpoint["epoch"] + 1
+        print('Checkpoint epoch')
+        print(checkpoint["epoch"])
         logging.info("Resume checkpoint from {}".format(url_or_filename))
 
     @main_process

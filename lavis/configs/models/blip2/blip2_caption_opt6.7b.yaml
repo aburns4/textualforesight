@@ -24,7 +24,8 @@ model:
   opt_model: "facebook/opt-6.7b"
 
   # generation configs
-  prompt: "a photo of"
+  prompt: "a screenshot of "
+  max_txt_len: 96
 
 
 preprocess:

@@ -24,8 +24,8 @@ model:
   t5_model: "google/flan-t5-xl"
 
   # generation configs
-  prompt: "a photo of"
-
+  prompt: "a screenshot of "
+  max_txt_len: 96
 
 preprocess:
     vis_processor:

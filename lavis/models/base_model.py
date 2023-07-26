@@ -95,6 +95,7 @@ class BaseModel(nn.Module):
             self.load_checkpoint(url_or_filename=finetune_path)
         else:
             load_pretrained = cfg.get("load_pretrained", True)
+            print('Within load pretrained')
             if load_pretrained:
                 # load pre-trained weights
                 pretrain_path = cfg.get("pretrained", None)

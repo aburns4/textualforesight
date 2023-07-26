@@ -33,6 +33,7 @@ from lavis.tasks import *
 def parse_args():
     parser = argparse.ArgumentParser(description="Training")
 
+    parser.add_argument("--sge-task-id", required=False, help="ID of current array job.")
     parser.add_argument("--cfg-path", required=True, help="path to configuration file.")
     parser.add_argument(
         "--options",
@@ -63,11 +64,13 @@ def setup_seeds(config):
 def main():
     # allow auto-dl completes on main process without timeout when using NCCL backend.
     # os.environ["NCCL_BLOCKING_WAIT"] = "1"
-
+    args = parse_args()
     # set before init_distributed_mode() to ensure the same job_id shared across all ranks.
     job_id = now()
-
-    cfg = Config(parse_args())
+    if args.sge_task_id:
+        job_id = '_'.join([job_id, str(args.sge_task_id)])
+    
+    cfg = Config(args)
 
     init_distributed_mode(cfg.run_cfg)
 
@@ -85,7 +88,7 @@ def main():
     runner = RunnerBase(
         cfg=cfg, job_id=job_id, task=task, model=model, datasets=datasets
     )
-    runner.evaluate(skip_reload=True)
+    runner.evaluate(skip_reload=False)
 
 
 if __name__ == "__main__":
