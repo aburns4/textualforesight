@@ -9,6 +9,7 @@ import copy
 import logging
 import json
 import os
+from omegaconf import OmegaConf
 from sklearn.metrics import f1_score
 
 import lavis.common.dist_utils as dist_utils
@@ -28,6 +29,7 @@ class VQATask(BaseTask):
         evaluate,
         num_ans_candidates,
         inference_method="rank",
+        answer_list=None,
         prompt="",
     ):
         super().__init__()
@@ -41,7 +43,7 @@ class VQATask(BaseTask):
         self.num_ans_candidates = num_ans_candidates
         self.prompt = prompt
 
-        self.answer_list = None
+        self.answer_list = (None if answer_list is None else OmegaConf.to_object(answer_list))
 
         self.ques_files = dict()
         self.anno_files = dict()
@@ -177,7 +179,8 @@ class RicoVQATask(VQATask):
         min_len,
         evaluate,
         num_ans_candidates,
-        inference_method="rank",
+        inference_method="generate",
+        answer_list=None,
         prompt="",
         metric_type="acc_vqa",
         anns_path="",
@@ -188,6 +191,7 @@ class RicoVQATask(VQATask):
                          evaluate,
                          num_ans_candidates,
                          inference_method=inference_method,
+                         answer_list=answer_list,
                          prompt=prompt)
         self.metric_type = metric_type
         self.anns_path = anns_path
@@ -202,7 +206,8 @@ class RicoVQATask(VQATask):
 
         evaluate = run_cfg.get("evaluate", False)
 
-        inference_method = run_cfg.get("inference_method", "rank")
+        inference_method = run_cfg.get("inference_method", "generate")
+        answer_list = run_cfg.get("answer_list", None)
         num_ans_candidates = run_cfg.get("num_ans_candidates", 128)
         prompt = run_cfg.get("prompt", "")
         eval_metric = run_cfg.get("metric_type", "acc_vqa")
@@ -214,6 +219,7 @@ class RicoVQATask(VQATask):
             min_len=min_len,
             evaluate=evaluate,
             num_ans_candidates=num_ans_candidates,
+            answer_list=answer_list,
             inference_method=inference_method,
             prompt=prompt,
             metric_type=eval_metric,
@@ -221,6 +227,7 @@ class RicoVQATask(VQATask):
         )
 
     def valid_step(self, model, samples):
+        # print(self.answer_list)
         answers = model.predict_answers(
             samples=samples,
             answer_list=self.answer_list,
@@ -231,6 +238,9 @@ class RicoVQATask(VQATask):
             num_ans_candidates=self.num_ans_candidates,
             prompt=self.prompt,
         )
+
+        if self.inference_method == "rank" and self.answer_list is not None:
+            answers = [self.answer_list[index[-1]] for index in answers]
         pred_qa_pairs = []
 
         question_id = samples["question_id"]
@@ -280,6 +290,31 @@ class RicoVQATask(VQATask):
 
             accuracy = sum(acc) / len(acc) * 100
             metrics = {"agg_metrics": accuracy, "acc": accuracy}
+        elif self.metric_type == "f1_vqa_flipped":
+            refs = []
+            preds = []
+            vqa_tool = VQAEval()
+            for res in results:
+                if res["gt_ans"] is None:
+                    # prepare test results for leaderboard evaluation
+                    self._save_result_leaderboard(results)
+                    return
+
+                gt_ans = res["gt_ans"]
+                pred = res["pred_ans"]
+
+                if self.inference_method == "generate":
+                    pred = vqa_tool.processPunctuation(pred)
+                    pred = vqa_tool.processDigitArticle(pred)
+
+                ref = 1 if gt_ans == "no" else 0
+                pred = 1 if pred == "no" else 0
+
+                refs.append(ref)
+                preds.append(pred)
+
+            f1 = f1_score(refs, preds)  * 100
+            metrics = {"agg_metrics": f1, "f1": f1}
         elif self.metric_type == "f1_vqa":
             refs = []
             preds = []
