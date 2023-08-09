@@ -14,6 +14,7 @@ from transformers import T5TokenizerFast
 from lavis.common.registry import registry
 from lavis.models.blip2_models.blip2 import Blip2Base, disabled_train
 from lavis.models.blip2_models.modeling_t5 import T5Config, T5ForConditionalGeneration
+from transformers.modeling_outputs import BaseModelOutput
 
 
 @registry.register_model("blip2_t5")
@@ -124,7 +125,7 @@ class Blip2T5(Blip2Base):
         else:    
             text_tokens = self.tokenizer(
                 samples["text_input"],
-                padding="max_length",
+                padding="longest",
                 truncation=True,
                 max_length=self.max_txt_len,
                 return_tensors="pt",
@@ -143,7 +144,7 @@ class Blip2T5(Blip2Base):
                 return_dict=True,
             )
 
-        inputs_t5 = self.t5_proj(query_output.last_hidden_state)
+        inputs_t5 = self.t5_proj(query_output.last_hidden_state[:,:query_tokens.size(1),:])
         atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
 
         with self.maybe_autocast(dtype=torch.bfloat16):
@@ -167,9 +168,6 @@ class Blip2T5(Blip2Base):
             targets = output_tokens.input_ids.masked_fill(
                 output_tokens.input_ids == self.t5_tokenizer.pad_token_id, -100
             )
-
-            # print(samples["text_input"][0])
-            # print(samples["text_output"][0])
 
             inputs_embeds = self.t5_model.encoder.embed_tokens(input_tokens.input_ids)
             inputs_embeds = torch.cat([inputs_t5, inputs_embeds], dim=1)
@@ -233,12 +231,11 @@ class Blip2T5(Blip2Base):
         else:
             text_tokens = self.tokenizer(
                 samples["text_input"],
-                padding="max_length",
+                padding="longest",
                 truncation=True,
                 max_length=self.max_txt_len,
                 return_tensors="pt",
             ).to(image.device)
-            # print('generate condition text tokens %s' % samples["text_input"][0])
 
             query_atts_itm = torch.ones(query_tokens.size()[:-1], dtype=torch.long).to(
                 image.device
@@ -253,14 +250,13 @@ class Blip2T5(Blip2Base):
                 return_dict=True,
             )
 
-        inputs_t5 = self.t5_proj(query_output.last_hidden_state)
+        inputs_t5 = self.t5_proj(query_output.last_hidden_state[:,:query_tokens.size(1),:])
         atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
 
         if "prompt" in samples.keys():
             prompt = samples["prompt"]
         else:
             prompt = self.prompt
-        # print('prompt inside generate %s' % prompt)
 
         if isinstance(prompt, str):
             prompt = [prompt] * image.size(0)
@@ -348,7 +344,7 @@ class Blip2T5(Blip2Base):
         else:
             text_tokens = self.tokenizer(
                 samples["text_input"],
-                padding="max_length",
+                padding="longest",
                 truncation=True,
                 max_length=self.max_txt_len,
                 return_tensors="pt",
@@ -367,7 +363,7 @@ class Blip2T5(Blip2Base):
                 return_dict=True,
             )
 
-        inputs_t5 = self.t5_proj(query_output.last_hidden_state)
+        inputs_t5 = self.t5_proj(query_output.last_hidden_state[:,:query_tokens.size(1),:])
         atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
 
         if "prompt" in samples.keys():
@@ -451,7 +447,7 @@ class Blip2T5(Blip2Base):
             text_input = samples["text_input"]
             text_tokens = self.tokenizer(
                 text_input,
-                padding="max_length",
+                padding="longest",
                 truncation=True,
                 max_length=self.max_txt_len,
                 return_tensors="pt",
@@ -470,7 +466,7 @@ class Blip2T5(Blip2Base):
                 return_dict=True,
             )
 
-        inputs_t5 = self.t5_proj(query_output.last_hidden_state)
+        inputs_t5 = self.t5_proj(query_output.last_hidden_state[:,:query_tokens.size(1),:])
         atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
 
         if isinstance(samples["text_input"], str):
@@ -507,6 +503,8 @@ class Blip2T5(Blip2Base):
 
             first_decode_step = outputs.scores[0]
             first_beam_scores = torch.index_select(first_decode_step, 0, first_beam_idx)
+            softmax = nn.Softmax(dim=-1)
+            first_beam_scores = softmax(first_beam_scores)
             decoded_yes_scores = first_beam_scores[:, yes_idx]
 
         return decoded_yes_scores
@@ -525,6 +523,7 @@ class Blip2T5(Blip2Base):
         **kwargs
     ):
         image = samples["image"]
+        bs = image.size(0)
         with self.maybe_autocast():
             image_embeds = self.ln_vision(self.visual_encoder(image))
         image_embeds = image_embeds.float()
@@ -540,20 +539,15 @@ class Blip2T5(Blip2Base):
                 encoder_attention_mask=image_atts,
                 return_dict=True,
             )
-        else:
-            # if prompt:
-            #     text_input = [prompt.format(question) for question in samples["text_input"]]
-            # else:
-                
+        else:   
             text_input = samples["text_input"]
             text_tokens = self.tokenizer(
                 text_input, # samples["text_input"],
-                padding="max_length",
+                padding="longest",
                 truncation=True,
                 max_length=self.max_txt_len,
                 return_tensors="pt",
             ).to(image.device)
-            # print('predict answers condition text tokens %s' % samples["text_input"][0])
 
             query_atts_itm = torch.ones(query_tokens.size()[:-1], dtype=torch.long).to(
                 image.device
@@ -568,45 +562,83 @@ class Blip2T5(Blip2Base):
                 return_dict=True,
             )
 
-        inputs_t5 = self.t5_proj(query_output.last_hidden_state)
+        inputs_t5 = self.t5_proj(query_output.last_hidden_state[:,:query_tokens.size(1),:])
         atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
 
         if isinstance(samples["text_input"], str):
             samples["text_input"] = [samples["text_input"]]
-        # if prompt:
-        #     text_input = [prompt.format(question) for question in samples["text_input"]]
-        # else:
             
         text_input = samples["text_input"]
-        # print('predict answers text input %s' % text_input[0])
-
         input_tokens = self.t5_tokenizer(
             text_input, padding="longest", return_tensors="pt"
         ).to(image.device)
 
+        if inference_method == "rank" and answer_list is not None:
+            candidate_tokens = self.t5_tokenizer(answer_list,
+                                                 return_tensors="pt",
+                                                 padding="longest").to(image.device)
+ 
         encoder_atts = torch.cat([atts_t5, input_tokens.attention_mask], dim=1)
 
         with self.maybe_autocast(dtype=torch.bfloat16):
             inputs_embeds = self.t5_model.encoder.embed_tokens(input_tokens.input_ids)
             inputs_embeds = torch.cat([inputs_t5, inputs_embeds], dim=1)
 
-            outputs = self.t5_model.generate(
-                inputs_embeds=inputs_embeds,
-                attention_mask=encoder_atts,
-                do_sample=False,
-                num_beams=num_beams,
-                max_new_tokens=max_len,
-                min_length=min_len,
-                length_penalty=length_penalty,
-            )
-            output_text = self.t5_tokenizer.batch_decode(
-                outputs, skip_special_tokens=True
-            )
+            if inference_method == "rank" and answer_list is not None:
+                encoder_outputs = self.t5_model.encoder(
+                    inputs_embeds=inputs_embeds,
+                    attention_mask=encoder_atts,
+                )
 
-        if self._apply_lemmatizer:
-            output_text = self._lemmatize(output_text)
+                n_cands = len(answer_list)
 
-        return output_text
+                this_encoder_outputs = BaseModelOutput(
+                    last_hidden_state=encoder_outputs[0].clone(),
+                )
+
+                this_encoder_outputs['last_hidden_state'] = this_encoder_outputs[0].repeat_interleave(n_cands, dim=0)
+                this_encoder_atts = encoder_atts.repeat_interleave(n_cands, dim=0)
+
+                start_i = 0
+                end_i = n_cands
+                this_output_tokens_ids = candidate_tokens.input_ids[start_i:end_i].repeat(bs, 1)
+                this_output_tokens_atts = candidate_tokens.attention_mask[start_i:end_i].repeat(bs, 1)
+
+                this_targets = this_output_tokens_ids.masked_fill(this_output_tokens_ids == self.t5_tokenizer.pad_token_id, -100)
+
+                outputs = self.t5_model(
+                    encoder_outputs=this_encoder_outputs,
+                    attention_mask=this_encoder_atts,
+                    decoder_attention_mask=this_output_tokens_atts,
+                    return_dict=True,
+                    labels=this_targets,
+                    reduction="none",
+                )
+                loss = outputs.loss
+
+                loss = loss.reshape(bs, n_cands)
+                output_class_ranks = torch.argsort(loss, dim=-1)
+            else:
+                outputs = self.t5_model.generate(
+                    inputs_embeds=inputs_embeds,
+                    attention_mask=encoder_atts,
+                    do_sample=False,
+                    num_beams=num_beams,
+                    max_new_tokens=max_len,
+                    min_length=min_len,
+                    length_penalty=length_penalty,
+                )
+                output_text = self.t5_tokenizer.batch_decode(
+                    outputs, skip_special_tokens=True
+                )
+
+        if inference_method == "rank" and answer_list is not None:
+            return output_class_ranks
+        else:
+            if self._apply_lemmatizer:
+                output_text = self._lemmatize(output_text)
+
+            return output_text
 
     def _lemmatize(self, answers):
         def apply(answer):
