@@ -36,7 +36,10 @@ class BaseDatasetBuilder:
             self.config = cfg
 
         self.data_type = self.config.data_type
-
+        
+        #TODO: find a better way to deal with this?
+        self.use_prefix_lm = self.config.get("use_prefix_lm", None)
+        print(self.use_prefix_lm)
         self.vis_processors = {"train": BaseProcessor(), "eval": BaseProcessor()}
         self.text_processors = {"train": BaseProcessor(), "eval": BaseProcessor()}
 
@@ -225,12 +228,21 @@ class BaseDatasetBuilder:
 
             # create datasets
             dataset_cls = self.train_dataset_cls if is_train else self.eval_dataset_cls
-            datasets[split] = dataset_cls(
-                vis_processor=vis_processor,
-                text_processor=text_processor,
-                ann_paths=ann_paths,
-                vis_root=vis_path,
-            )
+            if self.use_prefix_lm is not None:
+                datasets[split] = dataset_cls(
+                    vis_processor=vis_processor,
+                    text_processor=text_processor,
+                    ann_paths=ann_paths,
+                    vis_root=vis_path,
+                    use_prefix_lm=self.use_prefix_lm,
+                )
+            else:
+                datasets[split] = dataset_cls(
+                    vis_processor=vis_processor,
+                    text_processor=text_processor,
+                    ann_paths=ann_paths,
+                    vis_root=vis_path,
+                )
 
         return datasets
 
