@@ -75,6 +75,8 @@ class PrefetchLoader(object):
 
     def preload(self, it):
         try:
+            if hasattr(self, "batch"):
+                del self.batch
             self.batch = next(it)
         except StopIteration:
             self.batch = None
