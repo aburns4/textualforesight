@@ -114,6 +114,32 @@ class RicoVQAEvalDataset(RicoVQADataset):
             "prompt": question,
         }
 
+class RicoGroundCaptionEvalDataset(RicoVQADataset):
+    def __init__(self, vis_processor, text_processor, vis_root, ann_paths):
+        super().__init__(vis_processor, text_processor, vis_root, ann_paths)
+
+    def __getitem__(self, index):
+        # TODO this assumes image input, not general enough
+        ann = self.annotation[index]
+
+        image_path = os.path.join(self.vis_root, ann["image"])
+        image = Image.open(image_path).convert("RGB")
+
+        image = self.vis_processor(image)
+        question = self.text_processor(ann["question"], "Question: {} Answer: ")
+        question_id = ann["question_id"]
+
+        return {
+            "image": image,
+            "text_input": question,
+            "image_id": ann["image"].split(".")[0], 
+            "text_output": "",
+            "question_id": question_id,
+            "prompt": question,
+            # "target_id": ann["target_id"],
+            "object_id": ann["object_id"],
+        }
+
 class RicoGroundVQAEvalDataset(RicoVQADataset):
     def __init__(self, vis_processor, text_processor, vis_root, ann_paths):
         super().__init__(vis_processor, text_processor, vis_root, ann_paths)
