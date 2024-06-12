@@ -5,20 +5,21 @@
 #$ -pe omp 4
 
 # Request 1 GPU 
-#$ -l gpus=2
-#$ -l gpu_type="A40|A100|A6000"
+#$ -l gpus=4
+#$ -l gpu_type="A40|L40|A100|A6000"
 #$ -l gpu_memory=48G
+# -l mem_per_core=10G
 
 # Specify hard time limit
-#$ -l h_rt=20:00:00
+#$ -l h_rt=10:00:00
 
 # get email when job begins
 #$ -m beas
 
 # name experiment
-#$ -N noprompt
+#$ -N scgptredos2pre
 
-#$ -t 1
+#$ -t 1-3
 
 module load miniconda
 module load cuda/11.6
@@ -32,11 +33,11 @@ export TOKENIZERS_PARALLELISM=false
 
 export NCCL_P2P_DISABLE=1
 
-mp=27698
+mp=12410
 count=0
 for model in "flant5"; do
-    p="lavis/projects/blip2/train/no_prompt_caption_screen_ft_$model.yaml"
-    for warmup in "1000"; do
+    p="lavis/projects/blip2/train/caption_screen_ft_$model.yaml"
+    for warmup in "1000" "2500" "4919"; do # "1000" "2500" "4919"
         for initlr in "1e-5"; do
             (( count++ ))
             (( mp++ ))
@@ -45,8 +46,15 @@ for model in "flant5"; do
                 echo ${warmup}
                 echo ${initlr}
                 echo ${count}
-                # model.image_size=490 datasets.screen_caption.vis_processor.train.image_size=490 datasets.screen_caption.vis_processor.eval.image_size=490
-                python -m torch.distributed.run --nproc_per_node=2 --master_port=$mp train.py --sge-task-id $SGE_TASK_ID --cfg-path $p --options datasets.screen_caption.text_processor.train.prompt="" run.distributed=True run.world_size=2 run.num_workers=4 run.warmup_steps=${warmup} run.init_lr=${initlr}
+                python -m torch.distributed.run --nproc_per_node=4 --master_port=$mp train.py \
+                       --sge-task-id $SGE_TASK_ID --cfg-path $p \
+                       --options run.distributed=True \
+                                 run.world_size=4 \
+                                 run.num_workers=1 \
+                                 run.warmup_steps=${warmup} \
+                                 run.init_lr=${initlr} \
+                                 datasets.screen_caption.vis_processor.train.name="blip_image_eval" \
+                                 model.pretrained="/projectnb/ivc-ml/aburns4/LAVIS/lavis/output/BLIP2/stage2_spotlight/202311221948/checkpoint_4.pth"
             fi
         done
     done
