@@ -15,7 +15,7 @@ datasets:
   widget_vqa: # name of the dataset builder
     vis_processor:
         train:
-          name: "blip2_image_train"
+          name: "blip2_image_eval"
           image_size: 364
         eval:
           name: "blip_image_eval"
@@ -23,11 +23,8 @@ datasets:
     text_processor:
         train:
           name: "blip_question"
-          # prompt: "Question: {} Answer: "
         eval:
           name: "blip_question"
-    #     images:
-    #         storage: '/export/share/datasets/vision/coco/images/'
 
 run:
   task: rico_vqa
