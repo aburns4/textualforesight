@@ -281,21 +281,13 @@ class VisionTransformer(nn.Module):
                 drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[i], norm_layer=norm_layer,
                 init_values=init_values, window_size=self.patch_embed.patch_shape if use_rel_pos_bias else None)
             for i in range(depth)])
-#         self.norm = nn.Identity() if use_mean_pooling else norm_layer(embed_dim)
-#         self.fc_norm = norm_layer(embed_dim) if use_mean_pooling else None
-#         self.head = nn.Linear(embed_dim, num_classes) if num_classes > 0 else nn.Identity()
 
         if self.pos_embed is not None:
             trunc_normal_(self.pos_embed, std=.02)
         trunc_normal_(self.cls_token, std=.02)
-        # trunc_normal_(self.mask_token, std=.02)
-#         if isinstance(self.head, nn.Linear):
-#             trunc_normal_(self.head.weight, std=.02)
+
         self.apply(self._init_weights)
         self.fix_init_weight()
-#         if isinstance(self.head, nn.Linear):
-#             self.head.weight.data.mul_(init_scale)
-#             self.head.bias.data.mul_(init_scale)
 
     def fix_init_weight(self):
         def rescale(param, layer_id):
@@ -338,17 +330,9 @@ class VisionTransformer(nn.Module):
             else:
                 x = blk(x, rel_pos_bias)
         return x
-#         x = self.norm(x)
-
-#         if self.fc_norm is not None:
-#             t = x[:, 1:, :]
-#             return self.fc_norm(t.mean(1))
-#         else:
-#             return x[:, 0]
 
     def forward(self, x):
         x = self.forward_features(x)
-#         x = self.head(x)
         return x
 
     def get_intermediate_layers(self, x):
@@ -416,12 +400,6 @@ def convert_weights_to_fp16(model: nn.Module):
             if l.bias is not None:
                 l.bias.data = l.bias.data.half()
 
-#         if isinstance(l, (nn.MultiheadAttention, Attention)):
-#             for attr in [*[f"{s}_proj_weight" for s in ["in", "q", "k", "v"]], "in_proj_bias", "bias_k", "bias_v"]:
-#                 tensor = getattr(l, attr)
-#                 if tensor is not None:
-#                     tensor.data = tensor.data.half()
-
     model.apply(_convert_weights_to_fp16)
     
     
@@ -447,9 +425,7 @@ def create_eva_vit_g(img_size=224,drop_path_rate=0.4,use_checkpoint=False,precis
     interpolate_pos_embed(model,state_dict)
     
     incompatible_keys = model.load_state_dict(state_dict, strict=False)
-#     print(incompatible_keys)
     
     if precision == "fp16":
-#         model.to("cuda") 
         convert_weights_to_fp16(model)
     return model
