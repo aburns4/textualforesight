@@ -11,7 +11,62 @@ from lavis.common.registry import registry
 from lavis.datasets.builders.base_dataset_builder import BaseDatasetBuilder
 from lavis.datasets.datasets.image_text_pair_datasets import ImageTextPairDataset
 from lavis.datasets.datasets.laion_dataset import LaionDataset
+from lavis.datasets.datasets.app_pretrain_datasets import PretrainVQADataset
 
+@registry.register_builder("aitw_spotlight_caption")
+class SpotlightCaptionBuilder(BaseDatasetBuilder):
+    train_dataset_cls = ImageTextPairDataset
+
+    DATASET_CONFIG_DICT = {"default": "configs/datasets/app_pretrain/pretrain_spotlight_aitw_list_caps.yaml",
+                           "list_2m": "configs/datasets/app_pretrain/pretrain_spotlight_aitw_list_caps_2m.yaml",
+                            "gpt": "configs/datasets/app_pretrain/pretrain_spotlight_aitw_gpt_caps.yaml"}
+
+@registry.register_builder("motif_spotlight_caption")
+class SpotlightCaptionBuilder(BaseDatasetBuilder):
+    train_dataset_cls = ImageTextPairDataset
+
+    DATASET_CONFIG_DICT = {"default": "configs/datasets/app_pretrain/pretrain_spotlight_motif_list_caps.yaml",
+                            "final": "configs/datasets/app_pretrain/pretrain_spotlight_motif_list_caps_final.yaml",
+                            "list_2m": "configs/datasets/app_pretrain/pretrain_spotlight_motif_list_caps_final_2m.yaml",
+                            "gpt": "configs/datasets/app_pretrain/pretrain_spotlight_motif_gpt_caps.yaml"}
+
+@registry.register_builder("longitudinal_spotlight_caption")
+class SpotlightCaptionBuilder(BaseDatasetBuilder):
+    train_dataset_cls = ImageTextPairDataset
+
+    DATASET_CONFIG_DICT = {"default": "configs/datasets/app_pretrain/pretrain_spotlight_longitudinal_list_caps.yaml",
+                            "final": "configs/datasets/app_pretrain/pretrain_spotlight_longitudinal_list_caps_final.yaml",
+                            "list_2m": "configs/datasets/app_pretrain/pretrain_spotlight_longitudinal_list_caps_final_2m.yaml",
+                            "gpt": "configs/datasets/app_pretrain/pretrain_spotlight_longitudinal_gpt_caps.yaml"}
+
+@registry.register_builder("aitw_spotlight_stage2_caption")
+class SpotlightCaptionBuilder(BaseDatasetBuilder):
+    train_dataset_cls = PretrainVQADataset
+
+    DATASET_CONFIG_DICT = {"default": "configs/datasets/app_pretrain/pretrain_spotlight_2_aitw_list_caps.yaml",
+                           "list_2m": "configs/datasets/app_pretrain/pretrain_spotlight_2_aitw_list_caps_2m.yaml",
+                           "gpt": "configs/datasets/app_pretrain/pretrain_spotlight_2_aitw_gpt_caps.yaml",
+                           "gpt_2m": "configs/datasets/app_pretrain/pretrain_spotlight_2_aitw_gpt_caps_2m.yaml"}
+
+@registry.register_builder("motif_spotlight_stage2_caption")
+class SpotlightCaptionBuilder(BaseDatasetBuilder):
+    train_dataset_cls = PretrainVQADataset
+
+    DATASET_CONFIG_DICT = {"default": "configs/datasets/app_pretrain/pretrain_spotlight_2_motif_list_caps.yaml",
+                            "final": "configs/datasets/app_pretrain/pretrain_spotlight_2_motif_list_caps_final.yaml",
+                            "list_2m": "configs/datasets/app_pretrain/pretrain_spotlight_2_motif_list_caps_final_2m.yaml",
+                            "gpt": "configs/datasets/app_pretrain/pretrain_spotlight_2_motif_gpt_caps.yaml",
+                            "gpt_2m": "configs/datasets/app_pretrain/pretrain_spotlight_2_motif_gpt_caps_2m.yaml"}
+
+@registry.register_builder("longitudinal_spotlight_stage2_caption")
+class SpotlightCaptionBuilder(BaseDatasetBuilder):
+    train_dataset_cls = PretrainVQADataset
+
+    DATASET_CONFIG_DICT = {"default": "configs/datasets/app_pretrain/pretrain_spotlight_2_longitudinal_list_caps.yaml",
+                            "final": "configs/datasets/app_pretrain/pretrain_spotlight_2_longitudinal_list_caps_final.yaml",
+                            "list_2m": "configs/datasets/app_pretrain/pretrain_spotlight_2_longitudinal_list_caps_final_2m.yaml",
+                            "gpt": "configs/datasets/app_pretrain/pretrain_spotlight_2_longitudinal_gpt_caps.yaml",
+                            "gpt_2m": "configs/datasets/app_pretrain/pretrain_spotlight_2_longitudinal_gpt_caps_2m.yaml"}
 
 @registry.register_builder("conceptual_caption_3m")
 class ConceptualCaption3MBuilder(BaseDatasetBuilder):
