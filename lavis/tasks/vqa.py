@@ -255,11 +255,37 @@ class RicoVQATask(VQATask):
         return pred_qa_pairs
 
     def get_annotations_file(self, split):
-        assert 'widget-caption' in self.anns_path
-        filenames = {
-            "val": "eval_dev.json",
-            "test": "eval_test.json",
-        }
+        if 'widget-caption' in self.anns_path:
+            filenames = {
+                "val": "eval_dev.json",
+                "test": "eval_test.json",
+            }
+        elif 'mug' in self.anns_path:
+            if 'full_instr' in self.anns_path:
+                filenames = {
+                    "val": "mug_captions_full_instr_eval_coco.json",
+                }
+            elif "last_instr" in self.anns_path:
+                filenames = {
+                    "val": "mug_captions_last_instr_eval_coco.json",
+                }
+            else:
+                # first instr only
+                filenames = {
+                    "val": "mug_captions_eval_coco.json",
+                }
+        elif 'taperception' in self.anns_path:
+            if 'desc' in self.anns_path:
+                filenames = {
+                    "val": "tap_desc_captions_eval_coco.json",
+                    "test": "tap_desc_captions_test_coco.json",
+                }
+            else:
+                # just longer caption format
+                filenames = {
+                    "val": "tap_captions_eval_coco.json",
+                    "test": "tap_captions_test_coco.json",
+                }
         annotation_file = os.path.join(self.anns_path, filenames[split])
         return annotation_file
 
@@ -291,6 +317,7 @@ class RicoVQATask(VQATask):
             accuracy = sum(acc) / len(acc) * 100
             metrics = {"agg_metrics": accuracy, "acc": accuracy}
         elif self.metric_type == "f1_vqa_flipped":
+            print("correctly entering f1 vqa flipped metric")
             refs = []
             preds = []
             vqa_tool = VQAEval()
@@ -365,6 +392,48 @@ class RicoVQATask(VQATask):
         logging.info(metrics)
 
         return metrics
+
+@registry.register_task("rico_ground_caption_vqa")
+class RicoGroundCaptionTask(RicoVQATask):
+    def valid_step(self, model, samples):
+        answers = model.predict_answers(
+            samples=samples,
+            answer_list=self.answer_list,
+            inference_method=self.inference_method,
+            num_beams=self.num_beams,
+            max_len=self.max_len,
+            min_len=self.min_len,
+            num_ans_candidates=self.num_ans_candidates,
+            prompt=self.prompt,
+        )
+
+        # if self.inference_method == "rank" and self.answer_list is not None:
+        #     answers = [self.answer_list[index[-1]] for index in answers]
+        pred_qa_pairs = []
+
+        question_id = samples["question_id"]
+        # gt_answers = samples["text_output"]
+        img_ids = samples["image_id"]
+        # imgs = samples["image"]
+        # target_ids = samples["target_id"]
+        object_ids = samples["object_id"]
+
+        for answer, ques_id, img_id, oid in zip(answers, question_id, img_ids, object_ids):
+            ques_id = int(ques_id.item())
+            pred_qa_pairs.append({"question_id": ques_id,
+                                  "pred_ans": answer,
+                                #   "gt_ans": gt_answer,
+                                #   "caption": answer,
+                                  "image_id": img_id,
+                                #   "image": img,
+                                #   "target_id": tid,
+                                  "object_id": oid})
+
+        return pred_qa_pairs
+
+    @dist_utils.main_process
+    def _report_metrics(self, result_file, split):
+        pass
 
 @registry.register_task("rico_ground_vqa")
 class RicoGroundTask(RicoVQATask):
