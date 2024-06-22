@@ -15,7 +15,7 @@ datasets:
   tap_vqa: # name of the dataset builder
     vis_processor:
         train:
-          name: "blip2_image_train"
+          name: "blip_image_eval"
           image_size: 364
         eval:
           name: "blip_image_eval"
@@ -50,7 +50,7 @@ run:
   anns_path: "/projectnb2/ivc-ml/aburns4/taperception"
   inference_method: "generate"
   prompt: "Question: {} Answer: "
-  metric_type: "f1_vqa"
+  metric_type: "f1_vqa_flipped"
 
   seed: 42
   output_dir: "output/BLIP2/tappability/flant5"
