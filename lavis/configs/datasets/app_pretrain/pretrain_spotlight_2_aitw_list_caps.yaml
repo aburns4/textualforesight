@@ -1,0 +1,134 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+datasets:
+  aitw_spotlight_stage2_caption: # name of the dataset builder
+    # datadir: ${env.datadir}/datasets
+    data_type: images # [images|videos|features]
+
+    build_info:
+      # Be careful not to append minus sign (-) before split to avoid itemizing
+      annotations:
+        train:
+          url:
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/general_1_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_10_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_11_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_12_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_13_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_14_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_15_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_16_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_17_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_18_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_19_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_1_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_20_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_21_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_22_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_23_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_24_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_25_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_26_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_27_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_28_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_29_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_2_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_30_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_31_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_32_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_33_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_34_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_35_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_36_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_37_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_38_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_39_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_3_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_40_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_41_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_42_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_43_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_4_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_5_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_6_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_7_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_86_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_87_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_8_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_9_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/install_11_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/install_1_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/install_2_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/install_3_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/install_4_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/install_5_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/web_shopping_11_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/web_shopping_1_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/web_shopping_2_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/web_shopping_3_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/web_shopping_4_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/web_shopping_5_pretrain.json
+          storage:
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/general_1_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_10_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_11_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_12_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_13_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_14_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_15_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_16_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_17_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_18_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_19_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_1_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_20_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_21_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_22_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_23_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_24_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_25_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_26_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_27_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_28_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_29_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_2_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_30_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_31_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_32_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_33_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_34_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_35_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_36_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_37_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_38_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_39_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_3_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_40_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_41_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_42_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_43_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_4_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_5_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_6_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_7_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_86_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_87_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_8_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/google_apps_9_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/install_11_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/install_1_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/install_2_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/install_3_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/install_4_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/install_5_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/web_shopping_11_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/web_shopping_1_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/web_shopping_2_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/web_shopping_3_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/web_shopping_4_pretrain.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/elem_list_captions_no_icon/web_shopping_5_pretrain.json
+      images:
+        storage: /projectnb/ivc-ml/aburns4/aitw_images/

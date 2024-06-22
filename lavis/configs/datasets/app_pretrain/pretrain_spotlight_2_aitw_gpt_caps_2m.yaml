@@ -1,0 +1,60 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+datasets:
+  aitw_spotlight_stage2_caption: # name of the dataset builder
+    # datadir: ${env.datadir}/datasets
+    data_type: images # [images|videos|features]
+
+    build_info:
+      # Be careful not to append minus sign (-) before split to avoid itemizing
+      annotations:
+        train:
+          url:
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/0_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/1_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/2_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/3_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/4_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/5_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/6_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/7_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/8_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/9_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/10_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/11_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/12_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/13_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/14_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/15_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/16_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/17_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/18_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/19_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/20_captions.json
+          storage:
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/0_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/1_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/2_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/3_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/4_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/5_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/6_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/7_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/8_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/9_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/10_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/11_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/12_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/13_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/14_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/15_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/16_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/17_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/18_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/19_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/gpt_captions_2M/20_captions.json
+      images:
+        storage: /projectnb/ivc-ml/aburns4/aitw_images/

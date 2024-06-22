@@ -1,0 +1,39 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+datasets:
+  longitudinal_pretrain: # name of the dataset builder
+    # datadir: ${env.datadir}/datasets
+    data_type: images # [images|videos|features]
+    use_prefix_lm: False
+
+    build_info:
+      # Be careful not to append minus sign (-) before split to avoid itemizing
+      annotations:
+        train:
+          url:
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/0_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/1_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/2_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/3_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/4_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/5_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/6_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/7_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/8_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/9_captions.json
+          storage:
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/0_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/1_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/2_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/3_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/4_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/5_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/6_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/7_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/8_captions.json
+            - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/fortune_captions/9_captions.json
+      images:
+        storage: /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/longitudinal/

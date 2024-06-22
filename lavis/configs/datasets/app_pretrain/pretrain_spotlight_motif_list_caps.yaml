@@ -1,0 +1,38 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+datasets:
+  motif_spotlight_caption: # name of the dataset builder
+    # datadir: ${env.datadir}/datasets
+    data_type: images # [images|videos|features]
+
+    build_info:
+      # Be careful not to append minus sign (-) before split to avoid itemizing
+      annotations:
+        train:
+          url:
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/1_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/2_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/3_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/4_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/5_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/6_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/7_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/8_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/9_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/10_pretrain.json
+          storage:
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/1_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/2_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/3_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/4_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/5_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/6_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/7_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/8_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/9_pretrain.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/motif/elem_list_captions/10_pretrain.json
+      images:
+        storage: /projectnb2/ivc-ml/aburns4/stage2/

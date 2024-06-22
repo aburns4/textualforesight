@@ -1,0 +1,63 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+datasets:
+  aitw_pretrain: # name of the dataset builder
+    # datadir: ${env.datadir}/datasets
+    data_type: images # [images|videos|features]
+    use_prefix_lm: False
+
+    build_info:
+      # Be careful not to append minus sign (-) before split to avoid itemizing
+      annotations:
+        train:
+          url:
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data0_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data1_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data2_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data3_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data4_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data5_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data6_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data7_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data8_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data9_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data10_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data0_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data1_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data2_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data3_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data4_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data5_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data6_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data7_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data8_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data9_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data10_1.json
+          storage:
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data0_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data1_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data2_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data3_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data4_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data5_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data6_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data7_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data8_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data9_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data10_0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data0_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data1_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data2_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data3_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data4_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data5_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data6_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data7_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data8_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data9_1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/aitw/subsampled/stage2_fortune_images/pretrain_data10_1.json
+      images:
+        storage: /projectnb/ivc-ml/aburns4/aitw_images/

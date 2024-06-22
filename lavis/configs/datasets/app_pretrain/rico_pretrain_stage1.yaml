@@ -1,0 +1,41 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+datasets:
+  rico_pretrain: # name of the dataset builder
+    # datadir: ${env.datadir}/datasets
+    data_type: images # [images|videos|features]
+    use_prefix_lm: False
+
+    build_info:
+      # Be careful not to append minus sign (-) before split to avoid itemizing
+      annotations:
+        train:
+          url:
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data2.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data3.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data4.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data5.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data6.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data7.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data8.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data9.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data10.json
+          storage:
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data0.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data1.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data2.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data3.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data4.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data5.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data6.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data7.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data8.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data9.json
+              - /projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/spotlight_jsons/rico/subsampled/stage1/pretrain_data10.json
+      images:
+        storage: /projectnb2/ivc-ml/aburns4/combined/
