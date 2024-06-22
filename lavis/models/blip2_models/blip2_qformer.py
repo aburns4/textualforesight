@@ -89,7 +89,23 @@ class Blip2Qformer(Blip2Base):
 
     def forward(self, samples):
         image = samples["image"]
-        text = samples["text_input"]
+
+        if "text_output" not in samples:
+            text = samples["text_input"]
+        else:
+            text = []
+            prompt_len = []
+            assert len(samples["text_input"]) == len(samples["text_output"])                
+            for i in range(len(samples["text_input"])):
+                # need to do this because when we mix different pretrain prompts
+                # they will have different lengths
+                text.append(samples["text_input"][i] + samples["text_output"][i])
+                prompt_tokens = self.tokenizer(samples["text_input"][i].strip(), return_tensors="pt")
+
+                prompt_length = prompt_tokens.attention_mask.sum(1)
+                prompt_len.append(prompt_length)
+
+            text_lens = [self.tokenizer(x, return_tensors="pt").attention_mask.sum(1) for x in text]
 
         image_embeds = self.ln_vision(self.visual_encoder(image))
         image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long).to(
@@ -159,13 +175,13 @@ class Blip2Qformer(Blip2Base):
         if "image_id" in samples.keys(): #coco retrieval finetuning
             image_ids = samples["image_id"].view(-1,1)
             image_ids_all = concat_all_gather(image_ids)
-            pos_idx = torch.eq(image_ids, image_ids_all.t()).float()       
+            pos_idx = torch.eq(image_ids, image_ids_all.t()).float()
             sim_targets = pos_idx / pos_idx.sum(1,keepdim=True)   
             sim_targets = 0.9 * sim_targets + 0.1 * torch.ones_like(sim_targets) / sim_targets.size(1)
 
             loss_t2i = -torch.sum(F.log_softmax(sim_t2i, dim=1)*sim_targets,dim=1).mean()
             loss_i2t = -torch.sum(F.log_softmax(sim_i2t, dim=1)*sim_targets,dim=1).mean()     
-            loss_itc = (loss_t2i+loss_i2t)/2  
+            loss_itc = (loss_t2i+loss_i2t)/2
         else:                     
             loss_itc = (
                 F.cross_entropy(sim_i2t, targets, label_smoothing=0.1)
@@ -253,6 +269,10 @@ class Blip2Qformer(Blip2Base):
             decoder_input_ids == self.tokenizer.pad_token_id, -100
         )
 
+        if "text_output" in samples: # means we have both input and output
+            for i in range(len(prompt_len)):
+                # -1 because of eos token
+                labels[i, : prompt_len[i] - 1 ] = -100  # do not apply loss to the prompt
         query_atts = torch.ones(query_tokens.size()[:-1], dtype=torch.long).to(
             image.device
         )

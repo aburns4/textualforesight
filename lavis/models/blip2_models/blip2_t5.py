@@ -75,7 +75,6 @@ class Blip2T5(Blip2Base):
             num_query_token, self.visual_encoder.num_features
         )
 
-        self.Qformer.cls = None
         self.input_question = input_question
         if not self.input_question:
             self.Qformer.bert.embeddings.word_embeddings = None
@@ -83,6 +82,9 @@ class Blip2T5(Blip2Base):
             for layer in self.Qformer.bert.encoder.layer:
                 layer.output = None
                 layer.intermediate = None
+        else:
+            self.Qformer.resize_token_embeddings(len(self.tokenizer))
+        self.Qformer.cls = None
 
         self.t5_tokenizer = T5TokenizerFast.from_pretrained(t5_model)
         t5_config = T5Config.from_pretrained(t5_model)

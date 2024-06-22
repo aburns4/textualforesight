@@ -79,7 +79,6 @@ class Blip2OPT(Blip2Base):
             num_query_token, self.visual_encoder.num_features
         )
 
-        self.Qformer.cls = None
         self.input_question = input_question
         if not self.input_question:
             self.Qformer.bert.embeddings.word_embeddings = None
@@ -87,7 +86,9 @@ class Blip2OPT(Blip2Base):
             for layer in self.Qformer.bert.encoder.layer:
                 layer.output = None
                 layer.intermediate = None
-
+        else:
+            self.Qformer.resize_token_embeddings(len(self.tokenizer))
+        self.Qformer.cls = None
         self.opt_tokenizer = AutoTokenizer.from_pretrained(opt_model, use_fast=False)
         self.opt_model = OPTForCausalLM.from_pretrained(
             opt_model, torch_dtype=torch.float16
