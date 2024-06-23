@@ -1,15 +1,15 @@
 # Tell Me What's Next: Textual Foresight for Generic UI Representations
 
-<!-- ![Textual Foresight Versus Prior Work Spotlight's Element Captioning](./figures/textfore_vs_prior_work.png) -->
-<div style="text-align: left">
+<div style="display: flex; justify-content: space-between; align-items: center;">
 
-<div style="display:flex; flex-direction: row;">
-    <div style="width: 45%;">
-        <a href="url"><img src="./figures/textfore_vs_prior_work.png" align="left" height="550" width="450" ></a>
-    </div>
-    <div style="width: 55%;">
-This repository contains the modeling and data processing code for <i>"Tell Me What's Next: Textual Foresight for Generic UI Representations"</i> by Andrea Burns, Kate Saenko, and Bryan A. Plummer, which has been accepted
-to the Findings of the Association for Computational Linguistics (ACL) 2024.    </div>
+<div style="width: 45%;">
+<a href="url"><img src="./figures/textfore_vs_prior_work.png" height="550" width="450" ></a>
+</div>
+
+<div style="width: 55%; padding-left: 20px; vertical-align: top;">
+This repository contains the modeling and data processing code for <i>"Tell Me What's Next: Textual Foresight for Generic UI Representations"</i> by Andrea Burns, Kate Saenko, and Bryan A. Plummer, which has been accepted to the Findings of the Association for Computational Linguistics (ACL) 2024.
+</div>
+
 </div>
 
 ## Textual Foresight Pretraining
