@@ -6,7 +6,7 @@
 <a href="url"><img src="./figures/textfore_vs_prior_work.png" height="550" width="450" ></a>
 </div>
 
-<div style="width: 55%; padding-left: 20px; vertical-align: top;">
+<div style="width: 55%; padding-left: 20px;">
 This repository contains the modeling and data processing code for <i>"Tell Me What's Next: Textual Foresight for Generic UI Representations"</i> by Andrea Burns, Kate Saenko, and Bryan A. Plummer, which has been accepted to the Findings of the Association for Computational Linguistics (ACL) 2024.
 </div>
 
