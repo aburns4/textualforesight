@@ -12,10 +12,6 @@ This repository contains the modeling and data processing code for <i>"Tell Me W
 to the Findings of the Association for Computational Linguistics (ACL) 2024.    </div>
 </div>
 
-</div>
-
-</div>
-
 ## Textual Foresight Pretraining
 In this work we propose a new pretraining objective, Textual Foresight, for learning generic UI representations. Given ($s_t$, $a_t$, $s_{t+1}$) state, action, next state triplets from app action sequences, we define Textual Foresight as the task of generating a description for the future state $s_{t+1}$ given the current state and action pair ($s_t$, $a_t$). 
 ![Textual Foresight Model Diagram](./figures/textual_foresight.png)
