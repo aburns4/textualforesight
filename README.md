@@ -27,7 +27,7 @@ We find it is difficult to be as competitive to prior work on grounding and tapp
 In addition to our new Textual Foresight method, we propose and open source a newly constructed app UI dataset coined `OpenApp`. Data can be downloaded from [DropBox]() and instructions on file structure and data format are under `pretrain_stuff`.  We join, post process, and build new captions across millions of UI images from prior work (MoTIF (Burns et al. 2022), AITW (Rawles et al. 2023), and Fok et al. 2022). We curate image-caption pairs for three baselines and our method: element captioning, element list captioning, screen/image captioning, and textual foresight. We open source all variants and also release the code used for curation under `pretrain_stuff`. 
 
 ## Model Checkpoints
-We open source the best pretrained and fine-tuned checkpoints on [DropBox](). In addition to releasing these checkpoints, we share all config files needed to run other variants included in our paper. Please see the `run_scripts` folder for example scripts and more information on the dataset and training yamls for each experiment.
+We open source the best pretrained checkpoints on [DropBox](). In addition to releasing these checkpoints, we share all config files needed to run other variants included in our paper. Please see the `run_scripts` folder for example scripts and more information on the dataset and training yamls for each experiment.
 
 ## How to Cite
 If you use our data, code, or reference our [paper](https://arxiv.org/abs/2406.07822), please consider including the below citation:
