@@ -33,11 +33,6 @@ export TORCH_DISTRIBUTED_DEBUG="INFO"
 
 export NCCL_P2P_DISABLE=1
 
-# export CUDA_LAUNCH_BLOCKING=1 # for debug
-# export OMP_NUM_THREADS=${NSLOTS}
-# export TF_NUM_INTEROP_THREADS=${NSLOTS}
-# export TF_NUM_INTRAOP_THREADS=1
-
 mp=23241
 python -m torch.distributed.run --nproc_per_node=4 --master_port=$mp train.py \
                                                    --cfg-path "lavis/projects/blip2/train/pretrain_stage1_continued_spot_caps.yaml" \
@@ -47,5 +42,4 @@ python -m torch.distributed.run --nproc_per_node=4 --master_port=$mp train.py \
                                                              datasets.aitw_spotlight_caption.type="gpt" \
                                                              datasets.longitudinal_spotlight_caption.type="gpt" \
                                                              datasets.motif_spotlight_caption.type="gpt" \
-                                                             run.resume_ckpt_path="/projectnb/ivc-ml/aburns4/LAVIS/lavis/output/BLIP2/stage1_continued/202311301319/checkpoint_7.pth" \
                                                              model.load_pretrained=False \

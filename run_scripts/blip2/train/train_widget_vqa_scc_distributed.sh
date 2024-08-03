@@ -12,14 +12,14 @@
 
 # Specify hard time limit
 #$ -l h_rt=12:00:00
-# 8
+
 # get email when job begins
 #$ -m beas
 
 # name experiment
-#$ -N wcgptredos2pre
+#$ -N wcforesight
 
-#$ -t 1-3
+#$ -t 1
 
 module load miniconda
 module load cuda/11.6
@@ -36,34 +36,16 @@ export TORCH_DISTRIBUTED_DEBUG="INFO"
 export NCCL_P2P_DISABLE=1
 
 mp=22034
-count=0
-for mod in "flant5"; do
-    p="lavis/projects/blip2/train/caption_widget_vqa_ft_$mod.yaml"
-    for tcond in "True"; do
-        for warmup in "1000" "3500" "6835"; do # "1000" "3500" "6835"
-            for initlr in "1e-5"; do
-                (( count++ ))
-                (( mp++ ))
-                if [[ $count -eq $SGE_TASK_ID ]]; then
-                    echo ${p}
-                    echo ${tcond}
-                    echo ${warmup}
-                    echo ${initlr}
-                    echo ${count}
-                    echo $mp
-                    python -m torch.distributed.run --nproc_per_node=4 --master_port=$mp train.py \
-                           --sge-task-id $SGE_TASK_ID \
-                           --cfg-path $p \
-                           --options datasets.widget_vqa.vis_processor.train.name="blip_image_eval" \
-                                     model.text_condition_qformer=${tcond} \
-                                     run.num_workers=1 \
-                                     run.distributed=True \
-                                     run.world_size=4 \
-                                     run.warmup_steps=${warmup} \
-                                     run.init_lr=${initlr} \
-                                     model.pretrained="/projectnb/ivc-ml/aburns4/LAVIS/lavis/output/BLIP2/stage2_spotlight/202311221948/checkpoint_4.pth"
-                fi
-            done
-        done
-    done
-done
+p="lavis/projects/blip2/train/caption_widget_vqa_ft_flant5.yaml"
+
+python -m torch.distributed.run --nproc_per_node=4 --master_port=$mp train.py \
+        --sge-task-id $SGE_TASK_ID \
+        --cfg-path $p \
+        --options datasets.widget_vqa.vis_processor.train.name="blip_image_eval" \
+                    model.text_condition_qformer="True" \
+                    run.num_workers=1 \
+                    run.distributed=True \
+                    run.world_size=4 \
+                    run.warmup_steps="1000" \
+                    run.init_lr="1e-5" \
+                    model.pretrained="/projectnb/ivc-ml/aburns4/LAVIS/lavis/output/BLIP2/stage2_fortune/202310220230/checkpoint_4.pth"

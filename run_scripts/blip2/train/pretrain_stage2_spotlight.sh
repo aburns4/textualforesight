@@ -17,7 +17,7 @@
 #$ -m beas
 
 # name experiment
-#$ -N spotlightnopreog
+#$ -N spotlightpretrain
 
 # -t 1
 
@@ -34,11 +34,6 @@ export TORCH_DISTRIBUTED_DEBUG="INFO"
 
 export NCCL_P2P_DISABLE=1
 
-# export CUDA_LAUNCH_BLOCKING=1 # for debug
-# export OMP_NUM_THREADS=${NSLOTS}
-# export TF_NUM_INTEROP_THREADS=${NSLOTS}
-# export TF_NUM_INTRAOP_THREADS=1
-
 set -x
 
 mp=17428
@@ -48,8 +43,4 @@ python -m torch.distributed.run --nproc_per_node=4 --master_port=$mp train.py \
                                                              run.world_size=4 \
                                                              run.num_workers=1 \
                                                              run.batch_size_train=60 \
-                                                             datasets.motif_pretrain.type="stage2" \
-                                                             datasets.aitw_pretrain.type="stage2" \
-                                                             datasets.longitudinal_pretrain.type="stage2" \
-                                                             model.pretrained="https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained.pth" \
-                                                             run.resume_ckpt_path="/projectnb/ivc-ml/aburns4/LAVIS/lavis/output/BLIP2/stage2_spotlight/202312050624/checkpoint_1.pth"
+                                                             model.pretrained="https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained.pth"

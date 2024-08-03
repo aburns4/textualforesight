@@ -18,7 +18,7 @@
 #$ -m beas
 
 # name experiment
-#$ -N gptredos2nopret5
+#$ -N gptpretrain
 
 # -t 1
 
@@ -35,11 +35,6 @@ export TORCH_DISTRIBUTED_DEBUG="INFO"
 
 export NCCL_P2P_DISABLE=1
 
-# export CUDA_LAUNCH_BLOCKING=1 # for debug
-# export OMP_NUM_THREADS=${NSLOTS}
-# export TF_NUM_INTEROP_THREADS=${NSLOTS}
-# export TF_NUM_INTRAOP_THREADS=1
-
 mp=17117
 python -m torch.distributed.run --nproc_per_node=4 --master_port=$mp train.py \
                                                    --cfg-path "lavis/projects/blip2/train/pretrain_stage2_spot_caps_flant5.yaml" \
@@ -50,5 +45,4 @@ python -m torch.distributed.run --nproc_per_node=4 --master_port=$mp train.py \
                                                              datasets.longitudinal_spotlight_stage2_caption.type="gpt" \
                                                              datasets.motif_spotlight_stage2_caption.type="gpt" \
                                                              run.batch_size_train=80 \
-                                                             model.pretrained="https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained.pth" \
-                                                             run.resume_ckpt_path="/projectnb/ivc-ml/aburns4/LAVIS/lavis/output/BLIP2/stage2_spotlight/202311172019/checkpoint_0.pth"
+                                                             model.pretrained="https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xl.pth"

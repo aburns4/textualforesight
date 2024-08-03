@@ -16,7 +16,7 @@
 #$ -m beas
 
 # name experiment
-#$ -N frtn5e51st
+#$ -N langgroundforesight
 
 #$ -t 1
 
@@ -34,27 +34,13 @@ export TOKENIZERS_PARALLELISM=false
 export NCCL_P2P_DISABLE=1
 
 mp=23230
-count=0
-
-for warmup in "1000"; do
-    for folder in "stage2_spotlight/202311230255"; do
-        (( count++ ))
-        (( mp++ ))
-        p="lavis/projects/blip2/train/language_ground_captions_ft_flant5.yaml"
-        if [[ $count -eq $SGE_TASK_ID ]]; then
-            echo ${p}
-            echo ${model}
-            echo $mp
-            python -m torch.distributed.run --nproc_per_node=4 --master_port=$mp train.py \
-                    --sge-task-id $SGE_TASK_ID --cfg-path $p \
-                    --options run.num_workers=1 \
-                              run.distributed=True \
-                              run.world_size=4 \
-                              run.init_lr="5e-5" \
-                              datasets.language_ground.type="captions" \
-                              model.pretrained="/projectnb2/ivc-ml/aburns4/LAVIS/lavis/output/BLIP2/${folder}/checkpoint_4.pth" \
-                              run.warmup_steps=${warmup} \
-                              run.resume_ckpt_path="/projectnb2/ivc-ml/aburns4/LAVIS/lavis/output/BLIP2/language_ground/flant5/202405101109_3/checkpoint_best.pth"
-        fi
-    done
-done
+p="lavis/projects/blip2/train/language_ground_captions_ft_flant5.yaml"
+python -m torch.distributed.run --nproc_per_node=4 --master_port=$mp train.py \
+        --sge-task-id $SGE_TASK_ID --cfg-path $p \
+        --options run.num_workers=1 \
+                    run.distributed=True \
+                    run.world_size=4 \
+                    run.init_lr="5e-5" \
+                    datasets.language_ground.type="captions" \
+                    model.pretrained="/projectnb2/ivc-ml/aburns4/LAVIS/lavis/output/BLIP2/stage2_fortune/202310220230/checkpoint_4.pth" \
+                    run.warmup_steps="750" \

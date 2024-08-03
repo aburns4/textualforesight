@@ -17,9 +17,9 @@
 #$ -m beas
 
 # name experiment
-#$ -N scgptredos2pre
+#$ -N scforesight
 
-#$ -t 1-3
+#$ -t 1
 
 module load miniconda
 module load cuda/11.6
@@ -35,27 +35,14 @@ export NCCL_P2P_DISABLE=1
 
 mp=12410
 count=0
-for model in "flant5"; do
-    p="lavis/projects/blip2/train/caption_screen_ft_$model.yaml"
-    for warmup in "1000" "2500" "4919"; do # "1000" "2500" "4919"
-        for initlr in "1e-5"; do
-            (( count++ ))
-            (( mp++ ))
-            if [[ $count -eq $SGE_TASK_ID ]]; then
-                echo ${p}
-                echo ${warmup}
-                echo ${initlr}
-                echo ${count}
-                python -m torch.distributed.run --nproc_per_node=4 --master_port=$mp train.py \
-                       --sge-task-id $SGE_TASK_ID --cfg-path $p \
-                       --options run.distributed=True \
-                                 run.world_size=4 \
-                                 run.num_workers=1 \
-                                 run.warmup_steps=${warmup} \
-                                 run.init_lr=${initlr} \
-                                 datasets.screen_caption.vis_processor.train.name="blip_image_eval" \
-                                 model.pretrained="/projectnb/ivc-ml/aburns4/LAVIS/lavis/output/BLIP2/stage2_spotlight/202311221948/checkpoint_4.pth"
-            fi
-        done
-    done
-done
+p="lavis/projects/blip2/train/caption_screen_ft_flant5.yaml"
+
+python -m torch.distributed.run --nproc_per_node=4 --master_port=$mp train.py \
+        --sge-task-id $SGE_TASK_ID --cfg-path $p \
+        --options run.distributed=True \
+                    run.world_size=4 \
+                    run.num_workers=1 \
+                    run.warmup_steps="4919" \
+                    run.init_lr="1e-5" \
+                    datasets.screen_caption.vis_processor.train.name="blip_image_eval" \
+                    model.pretrained="/projectnb/ivc-ml/aburns4/LAVIS/lavis/output/BLIP2/stage2_fortune/202310220230/checkpoint_4.pth"

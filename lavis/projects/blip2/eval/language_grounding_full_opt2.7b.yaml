@@ -36,7 +36,7 @@ run:
   output_dir: "output/BLIP2/language_ground/opt2"
 
   evaluate: True
-  test_splits: ["val", "test"]
+  test_splits: ["test"]
 
   device: "cuda"
   world_size: 1
