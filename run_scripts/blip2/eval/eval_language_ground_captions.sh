@@ -16,7 +16,7 @@
 #$ -m beas
 
 # name experiment
-#$ -N evalgroundcapst5
+#$ -N evalgroundforesight
 
 #$ -t 1
 
@@ -36,10 +36,9 @@ export NCCL_P2P_DISABLE=1
 mp=27834
 count=0
 p="lavis/projects/blip2/eval/language_grounding_captions.yaml"
-dirs='/projectnb2/ivc-ml/aburns4/LAVIS/lavis/output/BLIP2/language_ground/flant5/20240516*'
+dirs='/projectnb2/ivc-ml/aburns4/LAVIS/lavis/output/BLIP2/language_ground/flant5/*'
 
 for i in $dirs; do
-    # odir in "output/BLIP2/language_ground/flant5/202402031821_1" "output/BLIP2/language_ground/flant5/202402040518_1"; do
     len_i="${#i}"
     odir="${i:39:len_i}"
     (( count++ ))
