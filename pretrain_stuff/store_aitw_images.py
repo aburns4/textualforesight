@@ -62,7 +62,7 @@ def __main__():
     assert args.start_range >= 0 and args.start_range <= args.end_range
     
     filenames = filenames[args.start_range : args.end_range]
-    print(args.start_range, args.end_range, len(filenames))
+    print("Processing range [%d:%d), of %d total files for the %s AITW dataset subset" args.start_range, args.end_range, len(filenames), dataset_name)
     raw_dataset = tf.data.TFRecordDataset(filenames, compression_type='GZIP').as_numpy_iterator()
 
     i = 0
