@@ -43,4 +43,4 @@ python -m torch.distributed.run --nproc_per_node=4 --master_port=$mp train.py \
                                                              run.world_size=4 \
                                                              run.num_workers=1 \
                                                              run.batch_size_train=60 \
-                                                             model.pretrained="https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained.pth"
+                                                             model.pretrained="https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xl.pth"
