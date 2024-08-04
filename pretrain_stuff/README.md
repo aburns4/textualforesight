@@ -9,7 +9,7 @@ Pretraining data configs are under `LAVIS/lavis/configs/datasets/app_pretrain` a
 Our example scripts provided under `run_scripts` include the appropriate yaml config for each experiment in our paper and set the data fields as needed.
 
 ## Pretraining Data
-### Annotation Files
+### Download Annotation Files
 In our [released data](), we provide a folder for `processed_pretraining_data` which consists of json files with image caption pairs. The captions and additional fields vary by pretraining objective (element vs. element list vs. screen caption vs. textual foresight). These should be unzipped within this `pretrain_folder`. You can confirm their folder is correct by cross checking their annotation paths in their corresponding `yaml` - we provide a table below to help guide you to the correct yaml for comparison. Of course, you will likely need to update the yaml annotation storage paths to reflect your root directory.
 
 This is what the final annotation folder structure should look like after unzipping the processed files.
@@ -45,7 +45,7 @@ pretrain_stuff/
 
 `fortune_captions` refers to Textual Foresight pretraining data. At some point we considered naming the method Fortune (like fortune telling), which is why there's some outdated naming throughout. Feel free to rename if it causes confusion. `gpt_captions` refers to the screen captioning data generated with GPT 3.5 Turbo. under `spotlight_captions` we store element and element list captions, with the former being broken into stage 1 and stage 2 annotations under `subsampled`.
 
-### Pretraining Images
+### Download Pretraining Images
 To pretrain with our provided annotations, we also have to store the images used for each sample. We provide the raw data from the Longitudinal and MoTIF prior work which contain the images. Simply download and unzip/untar the [pretrain raw data]() under `pretrain_stuff`. The following file structure should result:
 
 ```
@@ -80,8 +80,20 @@ Again, when finished storing the AITW images, **make sure to update** the `image
 ### From Scratch
 
 ## Finetuning Data
-We evaluate on four 
+### Download
+We evaluate on four downstream tasks: screen summarization, element captioning, tappability prediction, and language command grounding. We provide the already processed/formatted annotation files for you to download [here](), and then all that is left to do is (1) download the images associated with these downstream tasks and (2) update the dataset yamls to reflect where you choose to store the annotation and image files.
 
-### Quick Download
+All downstream tasks are annotated on top of the `Rico` dataset. Download the [raw data](https://storage.googleapis.com/crowdstf-rico-uiuc-4540/rico_dataset_v0.1/unique_uis.tar.gz) which contains the images needed for finetuning and make sure to **UPDATE** the `images` `storage` field to reflect the root path of where you store the images. The rico data is zipped in a folder named `combined/`. Again, the annotations paths should also be updated to reflect the folders you store the data in.
+
+| Finetuning Task                 | Annotation File Path                                     | Dataset yaml <br> (under `lavis/configs/datasets/rico/`)  | Dataset Builder <br> (under `lavis/datasets/builders/`)   |
+| ------------------------------- | -------------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------- |
+| Screen Summarization/Captioning | * `screen2words/train.json` <br> * `screen2words/val.json`  <br> * `screen2words/test.json` | `screen_summarization.yaml`  | `caption_builder.py` <br> * `screen_caption` (`default`)  |
+| Element/Widget Captioning       | * `widget-caption/train.json` <br> * `widget-caption/dev.json`<br> *  `widget-caption/test.json` | `widget_vqa.yaml`                                         | `caption_builder.py` <br> * `widget_vqa` (`default`)      |
+| Tappability Prediction          | * `taperception/train_4_tap_caption.json` <br> * `taperception/eval_4_tap_caption.json` <br> * `taperception/test_tap_caption.json` | `tappability_caption_4_vqa.yaml`  | `caption_builder.py` <br> * `tap_vqa` (`caption_quad`)    |
+| Language Grounding              |  * `mug/mug_captions_full_instr_train.json` <br> * `mug/mug_captions_full_instr_eval.json` <br> * `mug/mug_captions_2_test.json`    | `language_grounding_captions_all_instr.yaml` <br >`language_grounding_captions_eval.yaml` | `caption_builder.py` <br> * `language_ground` (`captions_full`) <br> * `language_ground_caption_eval` (`default`) |
+
+
+### From Scratch
+
 
 
