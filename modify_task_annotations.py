@@ -99,7 +99,7 @@ def load_widget_anns(anns_dir):
     ann_path = os.path.join(anns_dir, "widget_captions.csv")
     split_path = os.path.join(anns_dir, "split")
     all_split_files = glob.glob(os.path.join(split_path, "*.txt"))
-    # print(all_split_files)
+
     imgid_split = {}
     for split_f in all_split_files:
         s_key = split_f.split('/')[-1].split('.')[0]
@@ -108,14 +108,13 @@ def load_widget_anns(anns_dir):
             for sample in s:
                 imgid_split[sample.strip()] = s_key
 
-    # print(set(imgid_split.values()))
     with open(ann_path, "r") as f:
         anns = f.readlines()[1:]
         anns = [x.strip().split(',') for x in anns]
 
     split_anns = defaultdict(lambda: defaultdict(str))
     for sample in anns:
-        if sample[0] != 'rc': # or sample[1] != '13904': # REMOVE SECOND CONDITION, JUST USING FOR DEBUGGING
+        if sample[0] != 'rc':
             continue
         imgid_objid = '_'.join(sample[1:3])
         split_anns[imgid_objid]["target"] = sample[-1]
@@ -236,8 +235,6 @@ def load_ref_exp_anns(anns_dir, split):
         return tf.io.parse_single_example(example_proto, feature_description)
 
     parsed_dataset = raw_dataset.map(_parse_function)
-    # for parsed_record in parsed_dataset.take(1):
-    #     print(repr(parsed_record))
 
     new_dict = defaultdict(lambda: defaultdict(str))
     img_bbox = {} 
@@ -263,26 +260,12 @@ def load_ref_exp_anns(anns_dir, split):
                 print(img_bbox[imgid])
                 print(sorted_bboxes)
                 break
-        # if img_tobj_id in new_dict and len(sorted_bboxes) != len(new_dict[img_tobj_id]['screen_norm_bboxes']):
-        #     print(img_tobj_id)
-            # assert new_dict[img_tobj_id]['target_idx'] == new_target_objidx
-            # assert new_dict[img_tobj_id]['ref_exp'] != sample['image/ref_exp/text'].numpy().decode('utf-8')
-            # # print(new_dict[img_tobj_id]['screen_norm_bboxes'])
-            # # print(sorted_bboxes)
-            # assert len(sorted_bboxes) == len(new_dict[img_tobj_id]['screen_norm_bboxes'])
-            # for i in range(len(sorted_bboxes)):
-            #     print(i)
-            #     if sorted_bboxes[i] != new_dict[img_tobj_id]['screen_norm_bboxes'][i]:
-            #         print(sorted_bboxes[i], new_dict[img_tobj_id]['screen_norm_bboxes'][i])
-            # assert new_dict[img_tobj_id]['screen_norm_bboxes'] == sorted_bboxes
 
         # assert img_tobj_id not in new_dict
         new_dict[img_tobj_id]['target_idx'] = new_target_objidx
         new_dict[img_tobj_id]['screen_norm_bboxes'] = sorted_bboxes
         new_dict[img_tobj_id]['ref_exp'] = sample['image/ref_exp/text'].numpy().decode('utf-8')
     
-    # print(iters)
-    # print("Loaded %d samples for zero shot evaluation of referring expressions" % len(new_dict.keys()))
     return new_dict
 
 def load_view_hierarchy(image_paths, image_dir):
