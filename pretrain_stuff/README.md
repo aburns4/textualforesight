@@ -106,14 +106,25 @@ If you are interested in reprocessing the pretraining datasets, we also include 
 
 #### Element List Captioning Pretraining Data
 1. MoTIF and Longitudinal (follow the same steps for each with different dataset arguments)
-    * Run `get_elems_for_gpt.py`.
+    * Run `pretrain_stuff/get_elems_for_gpt.py`.
         * This results in the intermediate `elements_final/` output of element captions.
 2. AITW
-    * Run `process_aitw_gpt.py`. This should result in the intermediate `aitw/elements_no_icon/` dataset folder.
-3. Run `make_caption_from_elems.py` (this handles the final formatting for all datasets)
+    * Run `pretrain_stuff/process_aitw_gpt.py`. This should result in the intermediate `aitw/elements_no_icon/` dataset folder.
+3. Run `pretrain_stuff/make_caption_from_elems.py` (this handles the final formatting for all datasets)
     * It should result in the `aitw/elem_list_captions_no_icon`, `motif/elem_list_captions_final`, <br> and `longitudinal/elem_list_captions_final` data folders.
 
 #### GPT / Screen Captioning Pretraining Data
+
+1. Rerun `pretrain_stuff/process_aitw_gpt.py` with the output `folder` set to `elements_raw` and `include_icons` set to False.
+    * This should result in the intermediate `aitw/elements_raw/` dataset folder.
+    * We choose to use different element processing for GPT queries than that outlined by Spotlight, <br> which was used for element 
+        and element list processing.
+2. Run `gpt_jsons/elem_stats.py` which provides the samples to query GPT with (before the prompt formatting).
+3. Run `gpt_jsons/gpt3_5_turbo_async.py` to query GPT and get pseudo caption outputs.
+    * An example script is provided in `gpt_jsons/gpt_3.5_scc.sh`
+    * These queries will store intermediate text outputs in a `gpt_jsons/gpt3_5_captions` folder
+4. Finally, format the text files with `gpt_jsons/make_blip_caption_files.py` to get the final json files needed for training.
+    * This must be done for each dataset (see the file's input arguments for reference)
 
 #### Textual Foresight Pretraining Data
 
