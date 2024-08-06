@@ -127,6 +127,18 @@ If you are interested in reprocessing the pretraining datasets, we also include 
     * This must be done for each dataset (see the file's input arguments for reference)
 
 #### Textual Foresight Pretraining Data
+Note that to run the below steps from scratch you must first have gone through the screen <br>
+captioning steps outlined above. Textual Foresight uses a subset of the screen captioning data
+curated with GPT 3.5 Turbo.
+
+1. Run `pretrain_stuff/get_state_action_triplets.py` for each dataset (AITW, Longitudinal, MoTIF).
+    * This will result in `triplets.txt` files under each respective dataset folder in `spotlight_jsons`.
+2. Run `gpt_jsons/get_diff_st_s1_pairs.py`  for each dataset (AITW, Longitudinal, MoTIF). <br> This provides an extra level of cleaning to ensure valid state, action, next state triplets.
+    * This will result in `triplets_clean.txt` files under each respective dataset folder in `spotlight_jsons`.
+3. Run `gpt_jsons/get_fortune_samples_to_be_captioned.py`.
+    * This will result in a txt file `fortune_set_samples.txt` later to be used in finding the subset of GPT captions <br> that
+    can be used for Textual Foresight pretraining.
+4. Finally, run `gpt_jsons/make_fortune_caption_files.py` to obtain the json files under each dataset.
 
 ## Finetuning Data
 ###  Quick Download
