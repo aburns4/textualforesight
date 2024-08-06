@@ -78,6 +78,37 @@ Again, when finished storing the AITW images, **make sure to update** the `image
 | Textual Foresight              | `pretrain_stuff/gpt_jsons/*/fortune_captions/*`          | `*_pretrain_stage2_fortune.yaml` | `caption_builder.py` <br> * `longitudinal_pretrain` (`stage2_fortune`) <br> * `aitw_pretrain` (`stage2_fortune`)  <br> * `motif_pretrain` (`stage2_fortune`) |
 
 ### From Scratch
+If you are interested in reprocessing the pretraining datasets, we also include the code used to process, format, and annotate the files for pretraining. We note that this is a complicated multistep process per dataset due to make filters and reformattings being required. Keep in mind that for all steps, you likely need to change the input arguments to reflect your root path/directory on your own machine. Follow the below steps:
+
+#### Spotlight / Element Captioning Pretraining Data
+1. MoTIF and Longitudinal (follow the same steps for each with different dataset arguments)
+    * Run `pretrain_stuff/get_spotlight_data.py` with `process_from_raw` set to `True`.
+        * This results in the initial `raw/` output of element captions.
+    * Rerun `pretrain_stuff/get_spotlight_data.py` with `process_from_raw` set to `False`.
+        * This performs the final merging and thresholding (a Spotlight filter per their paper) which requires each element caption to occur at least 5 times. <br> This results in a `thresholded/` intermediate output.
+    * Run `pretrain_stuff/merge_all_dataset_jsons.py`
+        * This will result in the final `subsampled/stage1` and `subsampled/stage2` folders under the respective dataset folder within `pretrain_stuff`.
+2. AITW (this is a complicated process due to the size of AITW and different formatting)
+    * Run `pretrain_stuff/preprocess_aitw.py` with `process_from_raw` set to `True`.
+        * This results in the initial `raw_aitw_by_sub_dataset/` output of element captions, as well as `counts` metadata concerning the frequency of each caption.
+    * The counts output from the prior step was saved per dataset subset, so merge them by running `aitw_counts/join_counts.py`.
+        * There should now be an `all_counts.json` file in the `aitw_counts` folder.
+    * Rerun `pretrain_stuff/preprocess_aitw.py` with `process_from_raw` set to `False`.
+        * This results in the next intermediate output `aitw_by_app_thresholded/`
+    * Run `pretrain_stuff/spotlight_jsons/aitw/join_all_apps.py`
+        * This reformats the intermediate jsons and saves the output in a `grouped_apps` folder.
+    * Run `pretrain_stuff/merge_all_dataset_jsons.py` to obtain `subsampled/stage1/` and `subsampled/stage2/` folders.
+    * Finally, we manually (apologies) split each file in half within their respect `subsampled/stage1/` and `subsampled/stage2/` folders. <br> Store these in `subsampled/stage1_post/` and `subsampled/stage2_post/` folders.
+        * We do this because of how large the files are.
+        * By manually, we mean on the command line - it should just be a couple lines of code.
+
+
+
+#### Element List Captioning Pretraining Data
+
+#### GPT / Screen Captioning Pretraining Data
+
+#### Textual Foresight Pretraining Data
 
 ## Finetuning Data
 ### Download
@@ -92,8 +123,33 @@ All downstream tasks are annotated on top of the `Rico` dataset. Download the [r
 | Tappability Prediction          | * `taperception/train_4_tap_caption.json` <br> * `taperception/eval_4_tap_caption.json` <br> * `taperception/test_tap_caption.json` | `tappability_caption_4_vqa.yaml`  | `caption_builder.py` <br> * `tap_vqa` (`caption_quad`)    |
 | Language Grounding              |  * `mug/mug_captions_full_instr_train.json` <br> * `mug/mug_captions_full_instr_eval.json` <br> * `mug/mug_captions_2_test.json`    | `language_grounding_captions_all_instr.yaml` <br >`language_grounding_captions_eval.yaml` | `caption_builder.py` <br> * `language_ground` (`captions_full`) <br> * `language_ground_caption_eval` (`default`) |
 
+Finally, we note that there are additional val/test files used during training that require a different format to be compatible with MSCOCO eval and metric packages. We note these files below which should also lie under the respective finetuning dataset folder (they are included in the files for download, we just want to point them out). In the existing BLIP2 codebase, these filenames are hardcoded within task files (see `LAVIS/lavis/tasks/vqa.py`).
+
+Below we provide the filenames for reference and where they are hardcoded.
+| Finetuning Task                 | COCO Formatted Annotation Files                          | Where they are hardcoded (under `LAVIS/lavis/tasks/`) |
+| ------------------------------- | -------------------------------------------------------- | ------------------------ |
+| Screen Summarization/Captioning | `eval_val.json` <br> `eval_test.json` | `captioning.py` |
+| Element/Widget Captioning       | `eval_dev.json` <br> `eval_test.json` | `vqa.py` |
+| Tappability Prediction          | `tap_captions_eval_coco.json` <br> `tap_captions_test_coco.json` | `vqa.py` |
+| Language Grounding              | `mug_captions_full_instr_eval_coco.json` | `vqa.py` |
 
 ### From Scratch
 
+If you are interested in reprocessing the original downstream task datasets, we also include the code used to format the files for finetuning. Follow the below steps:
 
+1. Run `LAVIS/modify_task_annotations.py` to format the raw data from each respective dataset.
+2. Then, follow the below steps below
+    * Screen Summarization
+        * Run `screen2words/eval_anns_format.py`
+    * Widget Captioning
+        * Run `widget-caption/make_split_json.py`
+        * Then, run `widget-caption/eval_anns_format.py`
+    * Tappability Prediction
+        * Run `taperception/make_split_json.py`
+        * Then, run `taperception/eval_anns_format.py`
+    * Language Grounding
+        * Run `mug/mug_to_caption_annotations.py`
+        * Then, run `mug/eval_anns_format.py`
+
+## Evaluation Metrics
 
