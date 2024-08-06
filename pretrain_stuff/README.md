@@ -9,7 +9,7 @@ Pretraining data configs are under `LAVIS/lavis/configs/datasets/app_pretrain` a
 Our example scripts provided under `run_scripts` include the appropriate yaml config for each experiment in our paper and set the data fields as needed.
 
 ## Pretraining Data
-### Download Annotation Files
+### (Quick Download) Download Annotation Files
 In our [released data](), we provide a folder for `processed_pretraining_data` which consists of json files with image caption pairs. The captions and additional fields vary by pretraining objective (element vs. element list vs. screen caption vs. textual foresight). These should be unzipped within this `pretrain_folder`. You can confirm their folder is correct by cross checking their annotation paths in their corresponding `yaml` - we provide a table below to help guide you to the correct yaml for comparison. Of course, you will likely need to update the yaml annotation storage paths to reflect your root directory.
 
 This is what the final annotation folder structure should look like after unzipping the processed files.
@@ -45,7 +45,7 @@ pretrain_stuff/
 
 `fortune_captions` refers to Textual Foresight pretraining data. At some point we considered naming the method Fortune (like fortune telling), which is why there's some outdated naming throughout. Feel free to rename if it causes confusion. `gpt_captions` refers to the screen captioning data generated with GPT 3.5 Turbo. under `spotlight_captions` we store element and element list captions, with the former being broken into stage 1 and stage 2 annotations under `subsampled`.
 
-### Download Pretraining Images
+### (Quick Download) Download Pretraining Images
 To pretrain with our provided annotations, we also have to store the images used for each sample. We provide the raw data from the Longitudinal and MoTIF prior work which contain the images. Simply download and unzip/untar the [pretrain raw data]() under `pretrain_stuff`. The following file structure should result:
 
 ```
@@ -105,13 +105,20 @@ If you are interested in reprocessing the pretraining datasets, we also include 
 
 
 #### Element List Captioning Pretraining Data
+1. MoTIF and Longitudinal (follow the same steps for each with different dataset arguments)
+    * Run `get_elems_for_gpt.py`.
+        * This results in the intermediate `elements_final/` output of element captions.
+2. AITW
+    * Run `process_aitw_gpt.py`. This should result in the intermediate `aitw/elements_no_icon/` dataset folder.
+3. Run `make_caption_from_elems.py` (this handles the final formatting for all datasets)
+    * It should result in the `aitw/elem_list_captions_no_icon`, `motif/elem_list_captions_final`, <br> and `longitudinal/elem_list_captions_final` data folders.
 
 #### GPT / Screen Captioning Pretraining Data
 
 #### Textual Foresight Pretraining Data
 
 ## Finetuning Data
-### Download
+###  Quick Download
 We evaluate on four downstream tasks: screen summarization, element captioning, tappability prediction, and language command grounding. We provide the already processed/formatted annotation files for you to download [here](), and then all that is left to do is (1) download the images associated with these downstream tasks and (2) update the dataset yamls to reflect where you choose to store the annotation and image files.
 
 All downstream tasks are annotated on top of the `Rico` dataset. Download the [raw data](https://storage.googleapis.com/crowdstf-rico-uiuc-4540/rico_dataset_v0.1/unique_uis.tar.gz) which contains the images needed for finetuning and make sure to **UPDATE** the `images` `storage` field to reflect the root path of where you store the images. The rico data is zipped in a folder named `combined/`. Again, the annotations paths should also be updated to reflect the folders you store the data in.
