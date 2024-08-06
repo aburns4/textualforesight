@@ -1,8 +1,7 @@
 import json, glob
 import os
 
-# aitw = glob.glob("/projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/elements_raw/*") leaving as was
-aitw = []
+aitw = glob.glob("/projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/aitw/elements_no_icon/*")
 motif = glob.glob("/projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/motif/elements_final/*")
 longitudinal = glob.glob("/projectnb2/ivc-ml/aburns4/LAVIS/pretrain_stuff/gpt_jsons/longitudinal/elements_final/*")
 
