@@ -10,6 +10,10 @@ Our example scripts provided under `run_scripts` include the appropriate yaml co
 
 ## Pretraining Data
 ### (Quick Download) Download Annotation Files
+<details close>
+<summary>Expand for Instructions</summary>
+<br>
+
 In our [released data](), we provide a folder for `processed_pretraining_data` which consists of json files with image caption pairs. The captions and additional fields vary by pretraining objective (element vs. element list vs. screen caption vs. textual foresight). These should be unzipped within this `pretrain_folder`. You can confirm their folder is correct by cross checking their annotation paths in their corresponding `yaml` - we provide a table below to help guide you to the correct yaml for comparison. Of course, you will likely need to update the yaml annotation storage paths to reflect your root directory.
 
 This is what the final annotation folder structure should look like after unzipping the processed files.
@@ -44,8 +48,13 @@ pretrain_stuff/
 ```
 
 `fortune_captions` refers to Textual Foresight pretraining data. At some point we considered naming the method Fortune (like fortune telling), which is why there's some outdated naming throughout. Feel free to rename if it causes confusion. `gpt_captions` refers to the screen captioning data generated with GPT 3.5 Turbo. under `spotlight_captions` we store element and element list captions, with the former being broken into stage 1 and stage 2 annotations under `subsampled`.
+</details>
 
 ### (Quick Download) Download Pretraining Images
+<details close>
+<summary>Expand for Instructions</summary>
+<br>
+
 To pretrain with our provided annotations, we also have to store the images used for each sample. We provide the raw data from the Longitudinal and MoTIF prior work which contain the images. Simply download and unzip/untar the [pretrain raw data]() under `pretrain_stuff`. The following file structure should result:
 
 ```
@@ -76,8 +85,13 @@ Again, when finished storing the AITW images, **make sure to update** the `image
 | Screen Captioning              | `pretrain_stuff/gpt_jsons/*/gpt_captions/*`              | `pretrain_spotlight_2_*_gpt_caps.yaml`| `image_text_pair_builder.py` <br> * `longitudinal_spotlight_stage2_caption` (`gpt`)<br> * `aitw_spotlight_stage2_caption` (`gpt`) <br> * `motif_spotlight_stage2_caption` (`gpt`)|
 `motif_spotlight_stage2_caption` (`final`) |
 | Textual Foresight              | `pretrain_stuff/gpt_jsons/*/fortune_captions/*`          | `*_pretrain_stage2_fortune.yaml` | `caption_builder.py` <br> * `longitudinal_pretrain` (`stage2_fortune`) <br> * `aitw_pretrain` (`stage2_fortune`)  <br> * `motif_pretrain` (`stage2_fortune`) |
+</details>
 
 ### From Scratch
+<details close>
+<summary>Expand for Instructions</summary>
+<br>
+
 If you are interested in reprocessing the pretraining datasets, we also include the code used to process, format, and annotate the files for pretraining. We note that this is a complicated multistep process per dataset due to make filters and reformattings being required. Keep in mind that for all steps, you likely need to change the input arguments to reflect your root path/directory on your own machine. Follow the below steps:
 
 #### Spotlight / Element Captioning Pretraining Data
@@ -139,9 +153,13 @@ curated with GPT 3.5 Turbo.
     * This will result in a txt file `fortune_set_samples.txt` later to be used in finding the subset of GPT captions <br> that
     can be used for Textual Foresight pretraining.
 4. Finally, run `gpt_jsons/make_fortune_caption_files.py` to obtain the json files under each dataset.
+</details>
 
 ## Finetuning Data
 ###  Quick Download
+<details close>
+<summary>Expand for Instructions</summary>
+<br>
 We evaluate on four downstream tasks: screen summarization, element captioning, tappability prediction, and language command grounding. We provide the already processed/formatted annotation files for you to download [here](), and then all that is left to do is (1) download the images associated with these downstream tasks and (2) update the dataset yamls to reflect where you choose to store the annotation and image files.
 
 All downstream tasks are annotated on top of the `Rico` dataset. Download the [raw data](https://storage.googleapis.com/crowdstf-rico-uiuc-4540/rico_dataset_v0.1/unique_uis.tar.gz) which contains the images needed for finetuning and make sure to **UPDATE** the `images` `storage` field to reflect the root path of where you store the images. The rico data is zipped in a folder named `combined/`. Again, the annotations paths should also be updated to reflect the folders you store the data in.
@@ -162,10 +180,15 @@ Below we provide the filenames for reference and where they are hardcoded.
 | Element/Widget Captioning       | `eval_dev.json` <br> `eval_test.json` | `vqa.py` |
 | Tappability Prediction          | `tap_captions_eval_coco.json` <br> `tap_captions_test_coco.json` | `vqa.py` |
 | Language Grounding              | `mug_captions_full_instr_eval_coco.json` | `vqa.py` |
+</details>
 
 ### From Scratch
 
-If you are interested in reprocessing the original downstream task datasets, we also include the code used to format the files for finetuning. Follow the below steps:
+<details close>
+<summary>Expand for Instructions</summary>
+<br>
+
+If you are interested in reprocessing the original downstream task datasets, we also include the code used to format the files for finetuning. Follow the below steps and inspect each file to see how to set input arguments or set file names etc. (and feel free to ask any clarifying questions here on the repo):
 
 1. Run `LAVIS/modify_task_annotations.py` to format the raw data from each respective dataset.
 2. Then, follow the below steps below
@@ -176,10 +199,29 @@ If you are interested in reprocessing the original downstream task datasets, we 
         * Then, run `widget-caption/eval_anns_format.py`
     * Tappability Prediction
         * Run `taperception/make_split_json.py`
+        * \[Optional\] Run `taperception/make_higher_ratio.py` to upsample the not-tappable class samples. <br> We upsampled by a factor of 4 due to the class imbalance and use the resulting files for finetuning as mentioned in the paper.
         * Then, run `taperception/eval_anns_format.py`
     * Language Grounding
         * Run `mug/mug_to_caption_annotations.py`
         * Then, run `mug/eval_anns_format.py`
+</details>
+
 
 ## Evaluation Metrics
 
+<details close>
+<summary>Expand for Instructions</summary>
+<br>
+Screen summarization and element captioning tasks have built in captioning metrics which are included in the COCO eval setup during training, but if you wish to additionally report more recent metrics like we do (e.g., BERTScore and BLEURT), you will need to run the final eval script below to obtain those additional metrics. Additionally, tappability and language grounding are evaluating as a captioning task during training (please find more details in the paper and Appendix), but are evaluated with metrics like accuracy and F1 score at test time.
+
+<br>
+
+Below we provide pointers for the metric files and scripts to run for each downstream task to obtain the full suite of metrics. Again, note that the flags should be updated to reflect your file output paths and which task you're evaluating.
+
+| Finetuning Task                 | Metric Computation File (under `LAVIS/lavis/`)    | Example Script to Run Metric File (under `LAVIS/lavis/`) |
+| ------------------------------- | ------------------------------------------------ | ------------------------ |
+| Screen Summarization/Captioning | `output/BLIP2/fresh_metric.py`                   | `output/BLIP2/gpu_metric.sh` |
+| Element/Widget Captioning       | `output/BLIP2/fresh_metric.py`                   | `output/BLIP2/gpu_metric.sh` |
+| Tappability Prediction          | `output/BLIP2/fresh_metric.py`                   | `output/BLIP2/gpu_metric.sh` |
+| Language Grounding              | `output/language_ground_caption_eval.py`         | `output/lang_ground_gpu_metric.sh` |
+</details>
