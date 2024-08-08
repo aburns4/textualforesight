@@ -4,7 +4,7 @@
 
 Under `lavis/output/BLIP2` lies the folders for each experiment type, which can be either for pretraining or fine-tuning. We provide the pretrained checkpoints for the element list captioning and textual foresight pretrained models, as from our open source models and baselines, element list captioning pretraining resulted in the highest screen summarization performance, and textual foresight resulted in the highest performance for element list captioning, language grounding, and tappability prediction. 
 
-Model checkpoints are available along with pretraining data [here]().
+Model checkpoints are available along with pretraining data [here](https://drive.google.com/drive/folders/1vsX1BJKEFJmX7s92CpDHsHK0Wi6x8RIh?usp=drive_link).
 
 ## Example Experiment Scripts
 

@@ -14,7 +14,7 @@ Our example scripts provided under `run_scripts` include the appropriate yaml co
 <summary>Expand for Instructions</summary>
 <br>
 
-In our [released data](), we provide a folder for `processed_pretraining_data` which consists of json files with image caption pairs. The captions and additional fields vary by pretraining objective (element vs. element list vs. screen caption vs. textual foresight). These should be unzipped within this `pretrain_folder`. You can confirm their folder is correct by cross checking their annotation paths in their corresponding `yaml` - we provide a table below to help guide you to the correct yaml for comparison. Of course, you will likely need to update the yaml annotation storage paths to reflect your root directory.
+In our [released data](https://drive.google.com/drive/folders/1JmSfh6AP0dpSMrNv-5koZgnQXrajxqS7?usp=sharing), we provide a folder for `processed_pretraining_data` which consists of json files with image caption pairs. The captions and additional fields vary by pretraining objective (element vs. element list vs. screen caption vs. textual foresight). These should be unzipped within this `pretrain_folder`. You can confirm their folder is correct by cross checking their annotation paths in their corresponding `yaml` - we provide a table below to help guide you to the correct yaml for comparison. Of course, you will likely need to update the yaml annotation storage paths to reflect your root directory.
 
 This is what the final annotation folder structure should look like after unzipping the processed files.
 ```
@@ -55,7 +55,7 @@ pretrain_stuff/
 <summary>Expand for Instructions</summary>
 <br>
 
-To pretrain with our provided annotations, we also have to store the images used for each sample. We provide the raw data from the Longitudinal and MoTIF prior work which contain the images. Simply download and unzip/untar the [pretrain raw data]() under `pretrain_stuff`. The following file structure should result:
+To pretrain with our provided annotations, we also have to store the images used for each sample. We provide the raw data from the Longitudinal and MoTIF prior work which contain the images. Simply download and unzip/untar the [raw pretrain data](https://drive.google.com/drive/folders/1rMdsgSDLlQvhechvicFfY3E2Yfw9YIOh?usp=drive_link) under `pretrain_stuff`. The following file structure should result:
 
 ```
 pretrain_stuff/
@@ -160,7 +160,8 @@ curated with GPT 3.5 Turbo.
 <details close>
 <summary>Expand for Instructions</summary>
 <br>
-We evaluate on four downstream tasks: screen summarization, element captioning, tappability prediction, and language command grounding. We provide the already processed/formatted annotation files for you to download [here](), and then all that is left to do is (1) download the images associated with these downstream tasks and (2) update the dataset yamls to reflect where you choose to store the annotation and image files.
+
+We evaluate on four downstream tasks: screen summarization, element captioning, tappability prediction, and language command grounding. We provide the already processed/formatted annotation files for you to download [here](https://drive.google.com/drive/folders/1-gl4qjixf8uSMJXb8yQnxWiHwxUN3vwp?usp=drive_link), and then all that is left to do is (1) download the images associated with these downstream tasks and (2) update the dataset yamls to reflect where you choose to store the annotation and image files.
 
 All downstream tasks are annotated on top of the `Rico` dataset. Download the [raw data](https://storage.googleapis.com/crowdstf-rico-uiuc-4540/rico_dataset_v0.1/unique_uis.tar.gz) which contains the images needed for finetuning and make sure to **UPDATE** the `images` `storage` field to reflect the root path of where you store the images. The rico data is zipped in a folder named `combined/`. Again, the annotations paths should also be updated to reflect the folders you store the data in.
 
