@@ -29,6 +29,38 @@ In addition to our new Textual Foresight method, we propose and open source a ne
 ## Model Checkpoints
 We open source all pretrained checkpoints on [DropBox](). In addition to releasing these checkpoints, we share all config files needed to run other variants and finetuning experiments included in our paper. Please see the `run_scripts` folder for example scripts and more information on the dataset and training yamls for each experiment.
 
+## Results
+Here is a summary of the experimental results from our main paper.
+
+For generation style tasks of screen captioning, our baselines and Textual Foresight all reach new SOTA. In addition to this, Textual Foresight is the best representation learning approach for element captioning (boosting performance by over 5% compared to the other open source baselines). As a result, Textual Foresight becomes the best on average with significantly less data.
+
+| Model        | Screen Summarization | Element Captioning | Average |
+| -----------  | -------------------- | ------------------ | ------- |
+| Screen2Words | 61.3                 | --                 | --      |
+| Widget Caption | -- | 97.0 | -- |
+| VUT | 65.6 | 99.3 | 82.5 |
+| Spotlight | 106.7 | **141.8** | 124.2 |
+| BLIP-2 (Original) | 125.1 | 121.4 | 123.2 |
+| Screen Caption | 125.7 | 118.9 | 121.2 |
+| Element List | **127.9** | 121.6 | 124.8 |
+| Textual Foresight | 152.4 | <u>128.0</u> | **126.7** |
+
+Our findings for predictive style tasks on tappability prediction and language grounding show that more work is needed toward adapting powerful vision-language models to these challenging, localized tasks in low-data regimes. Still, Textual Foresight is the best open source and generic representation learning approaches, despite having half the data of our other new baselines.
+
+| Model        | Tappability Prediction | Language Grounding |
+| -----------  | -------------------- | ------------------ |
+| Taperception | 85.5 | --    |
+| Swearngin & Li | 87.9 | -- |
+| MUG | -- | **58.6** |
+| VUT | 88.3 | -- |
+| Spotlight | **88.4** | -- |
+| BLIP-2 (Original) | 63.9 | 29.8 |
+| Screen Caption | 68.5 | 34.3 |
+| Element List | 67.1 | 38.2 |
+| Textual Foresight |<u>74.2</u> | <u>39.5</u> |
+
+Please note that the screen captioning pretraining and element list captioning pretraining results were accidentally swapped for tappability prediction, and we have updated it in the latest arxiv version (see below for the link to the paper). Textual Foresight is the best open source generic representation learning approach still.
+
 ## How to Cite
 If you use our data, code, or reference our [paper](https://arxiv.org/abs/2406.07822), please consider including the below citation:
 
